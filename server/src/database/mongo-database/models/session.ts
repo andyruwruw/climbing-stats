@@ -5,12 +5,12 @@ import {
 } from 'mongoose';
 
 const schema = new Schema({
-  id: {
+  user: {
     type: String,
     required: true,
   },
 
-  user: {
+  crag: {
     type: String,
     required: true,
   },
@@ -22,22 +22,17 @@ const schema = new Schema({
 
   start: {
     type: Number,
-    default: 0,
+    default: Date.now(),
   },
 
   end: {
     type: Number,
-    default: 0,
+    default: Date.now(),
   },
 
   duration: {
     type: Number,
     default: 0,
-  },
-
-  location: {
-    type: String,
-    required: true,
   },
 
   activities: {
@@ -48,7 +43,7 @@ const schema = new Schema({
 
   felt: {
     type: Number,
-    default: 5,
+    default: -1,
   },
 
   description: {

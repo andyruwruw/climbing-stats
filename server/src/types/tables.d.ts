@@ -5,12 +5,17 @@ export interface Session {
   /**
    * ID of the session.
    */
-  id: string;
+  _id?: string;
 
   /**
    * Id of the user's whose session this is.
    */
   user: string;
+
+  /**
+   * Id of the crag the session was at.
+   */
+  crag: string;
 
   /**
    * Date of the session.
@@ -31,11 +36,6 @@ export interface Session {
    * Duration of the session.
    */
   duration: number;
-
-  /**
-   * Id of the crag the session was at.
-   */
-  location: string;
 
   /**
    * What activites were done.
@@ -80,7 +80,7 @@ export interface Crag {
   /**
    * Id of the crag.
    */
-  id: string;
+  _id: string;
 
   /**
    * Name of the crag.
@@ -175,7 +175,7 @@ export interface Area {
   /**
    * Id of the area.
    */
-  id: string;
+  _id: string;
 
   /**
    * What crag this area belongs to.
@@ -252,7 +252,11 @@ export type RockType = 'boulder' | 'wall';
  * A rock that has routes on it.
  */
 export interface Rock {
-  id: string;
+  _id: string;
+
+  crag: string;
+
+  area: string;
 
   /**
    * What type of rock.
@@ -322,9 +326,29 @@ export interface Rock {
 
 export interface Route {
   /**
+   * Route ID.
+   */
+  _id?: string;
+
+  /**
    * Type of climbing activity.
    */
   type: ClimbingActivities;
+
+  /**
+   * Crag this route is at.
+   */
+  crag: string;
+
+  /**
+   * Area this route is at.
+   */
+  area: string;
+
+  /**
+   * Rock this route is on.
+   */
+  rock: string;
 
   /**
    * Name of the route.
@@ -340,21 +364,6 @@ export interface Route {
    * Alternative names of the area.
    */
   altNames: string[];
-
-  /**
-   * Id of crag this route is at.
-   */
-  location: string;
-
-  /**
-   * Area this route is at.
-   */
-  area: string;
-
-  /**
-   * Rock this route is on.
-   */
-  rock: string;
 
   /**
    * Main image of item.
@@ -394,7 +403,7 @@ export interface Tick {
   /**
    * Id of the tick.
    */
-  id: string;
+  _id?: string;
 
   /**
    * User making the tick.
@@ -543,7 +552,7 @@ interface ExternalHref {
   /**
    * Address to item.
    */
-  address: string;
+  address?: string;
 
   /**
    * Mountain Project link.
@@ -583,17 +592,17 @@ interface ExternalHref {
   /**
    * Youtube link.
    */
-  youtube: string;
+  youtube?: string;
 
   /**
    * Vimeo link.
    */
-  vimeo: string;
+  vimeo?: string;
 
   /**
    * Instagram link.
    */
-  instagram: string;
+  instagram?: string;
 }
 
 /**
@@ -672,3 +681,28 @@ export type GradingSystem = 'v-scale'
 | 'australian'
 | 'circuit-grading'
 | 'everything-v3';
+
+/**
+ * User object.
+ */
+export interface User {
+  /**
+   * User's username.
+   */
+  username: string;
+
+  /**
+   * Display name.
+   */
+  displayName: string;
+
+  /**
+   * Image of user.
+   */
+  image: string;
+
+  /**
+   * External HREFs.
+   */
+  hrefs: ExternalHref;
+};

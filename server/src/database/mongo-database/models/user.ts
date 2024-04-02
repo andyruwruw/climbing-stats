@@ -5,11 +5,6 @@ import {
 } from 'mongoose';
 
 const schema = new Schema({
-  id: {
-    type: String,
-    required: true,
-  },
-
   username: {
     type: String,
     required: true,
@@ -24,7 +19,11 @@ const schema = new Schema({
     type: String,
     default: '',
   },
+
+  hrefs: {
+    type: Object,
+    default: {},
+  },
 });
 
-export const UserModel = model('
-ser', schema);
+export const UserModel = model('User', schema);

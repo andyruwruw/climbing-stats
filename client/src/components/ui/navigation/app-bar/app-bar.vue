@@ -1,9 +1,12 @@
 <template>
   <v-app-bar
     app
-    color="primary"
+    color="transparent"
     dark>
     <div class="d-flex align-center">
+      <span :class="$style.title">
+        Climbing Stats
+      </span>
     </div>
 
     <v-spacer></v-spacer>
@@ -25,5 +28,9 @@ export default Vue.extend({
 
 <style lang="scss" module>
 .component {
+}
+
+.title {
+  font-size: 1rem;
 }
 </style>

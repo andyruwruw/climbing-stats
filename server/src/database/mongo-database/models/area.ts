@@ -5,11 +5,6 @@ import {
 } from 'mongoose';
 
 const schema = new Schema({
-  id: {
-    type: String,
-    required: true,
-  },
-
   crag: {
     type: String,
     required: true,

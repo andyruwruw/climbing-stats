@@ -6,6 +6,9 @@ import {
   MutationTree,
 } from 'vuex';
 
+// Local Imports
+import api from '../../api';
+
 // Types
 import { User } from '../../types';
 
@@ -100,120 +103,6 @@ const mutations: MutationTree<AuthModuleState> = {
 
 // Module actions
 const actions: ActionTree<AuthModuleState, any> = {
-  /**
-   * Logs a user in with the website.
-   *
-   * @param {ActionContext<NavigationState, any>} context Vuex action context.
-   * @param {Record<string, any>} payload Action payload.
-   * @param {string} payload.username User's username.
-   * @param {string} payload.password User's password.
-   */
-  async login({
-    commit,
-    dispatch,
-  }, {
-    username,
-    password,
-  }): Promise<void> {
-    try {
-      const user = await api.authentication.login(
-        username,
-        password,
-      );
-
-      if (!('message' in user)) {
-        commit('setUser', user);
-        dispatch('navigation/goToHome', undefined, { root: true });
-      } else {
-        dispatch('error/logError', { error: user.message }, { root: true });
-      }
-    } catch (error) {
-      dispatch('error/logError', { error: `${error}` }, { root: true });
-    }
-  },
-
-  /**
-   * Registers a user in with the website.
-   *
-   * @param {ActionContext<NavigationState, any>} context Vuex action context.
-   * @param {Record<string, any>} payload Action payload.
-   */
-  async register({
-    commit,
-    dispatch,
-  }, payload): Promise<void> {
-    let response;
-
-    try {
-      response = await api.authentication.register(
-        payload.username,
-        payload.password,
-        payload.displayName,
-        payload.max || undefined,
-        payload.email || undefined,
-        payload.image || undefined,
-        payload.started || undefined,
-        payload.home || undefined,
-        payload.height || undefined,
-        payload.span || undefined,
-        payload.weight || undefined,
-        payload.age || undefined,
-        payload.privacy || undefined,
-        payload.attemptPrivacy || undefined,
-        payload.sessionPrivacy || undefined,
-        payload.interestPrivacy || undefined,
-        payload.reviewPrivacy || undefined,
-        payload.ratingPrivacy || undefined,
-        payload.shoesPrivacy || undefined,
-      );
-
-      console.log(response);
-
-      if ('username' in response) {
-        commit('setUser', response);
-        dispatch('navigation/goToHome', undefined, { root: true });
-      } else {
-        dispatch('error/logError', { error: response.message }, { root: true });
-      }
-    } catch (error) {
-      dispatch('error/logError', { error: `${response ? (response as ErrorResponse).message : 'Unknown error.'}` }, { root: true });
-    }
-  },
-
-  /**
-   * Checks if user has a current session.
-   *
-   * @param {ActionContext<NavigationState, any>} context Vuex action context.
-   */
-  async checkUser({
-    commit,
-    dispatch,
-  }): Promise<void> {
-    try {
-      const user = await api.authentication.checkUser();
-
-      if (user && !('message' in user)) {
-        commit('setUser', user);
-        dispatch('navigation/goToHome', undefined, { root: true });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  /**
-   * Logs a user out and clears state.
-   *
-   * @param {ActionContext<NavigationState, any>} context Vuex action context.
-   */
-  logout({
-    commit,
-    dispatch,
-  }): void {
-    commit('reset');
-    dispatch('navigation/goToLanding', undefined, { root: true });
-    api.authentication.logout();
-  },
 };
 
 // Module

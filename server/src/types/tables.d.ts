@@ -74,6 +74,29 @@ export interface Session {
 }
 
 /**
+ * Partner climbed with.
+ */
+export interface ClimbingPartner {
+  firstName: string;
+
+  lastname: string;
+
+  private: boolean;
+
+  rank: number;
+
+  hours: number;
+
+  sessions: number;
+
+  outdoorHours: number;
+
+  outdoorSessions: number;
+
+  met: string;
+}
+
+/**
  * Data related to locations.
  */
 export interface Crag {

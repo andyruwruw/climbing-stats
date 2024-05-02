@@ -4,7 +4,14 @@ import { DataAccessObject } from './dao';
 
 // Types
 import {
-  Playlist,
+  Area,
+  ClimbingPartner,
+  Crag,
+  Media,
+  Rock,
+  Route,
+  Session,
+  Tick,
   User,
 } from '../types/tables';
 import { DataAccessObjectInterface } from '../types/database';
@@ -14,9 +21,49 @@ import { DataAccessObjectInterface } from '../types/database';
  */
 export class Database {
   /**
-   * Data access object for Playlists.
+   * Data access object for Areas.
    */
-  playlists: DataAccessObjectInterface<Playlist> = new DataAccessObject<Playlist>();
+  areas: DataAccessObjectInterface<Area> = new DataAccessObject<Area>();
+
+  /**
+   * Data access object for ClimbingPartners.
+   */
+  climbingPartners: DataAccessObjectInterface<ClimbingPartner> = new DataAccessObject<ClimbingPartner>();
+
+  /**
+   * Data access object for Crags.
+   */
+  crags: DataAccessObjectInterface<Crag> = new DataAccessObject<Crag>();
+
+
+  /**
+   * Data access object for Medias.
+   */
+  media: DataAccessObjectInterface<Media> = new DataAccessObject<Media>();
+
+
+  /**
+   * Data access object for Rocks.
+   */
+  rocks: DataAccessObjectInterface<Rock> = new DataAccessObject<Rock>();
+
+
+  /**
+   * Data access object for Routes.
+   */
+  routes: DataAccessObjectInterface<Route> = new DataAccessObject<Route>();
+
+
+  /**
+   * Data access object for Sessions.
+   */
+  sessions: DataAccessObjectInterface<Session> = new DataAccessObject<Session>();
+
+
+  /**
+   * Data access object for Ticks.
+   */
+  ticks: DataAccessObjectInterface<Tick> = new DataAccessObject<Tick>();
 
   /**
    * Data access object for Users.
@@ -46,11 +93,6 @@ export class Database {
    * @returns {DataAccessObjectInterface} Data access object.
    */
   getDao(name: string): DataAccessObject<any> {
-    switch (name) {
-      case 'playlists':
-        return this.playlists;
-      default:
-        return this.users;
-    }
+    return this.users;
   }
 }

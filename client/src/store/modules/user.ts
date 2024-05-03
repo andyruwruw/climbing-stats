@@ -6,9 +6,6 @@ import {
   MutationTree,
 } from 'vuex';
 
-// Local Imports
-import api from '../../api';
-
 // Types
 import { User } from '../../types';
 
@@ -18,11 +15,18 @@ export interface AuthModuleState extends Record<string, any> {
    * Current logged in user.
    */
   user: User | null;
+
+  /**
+   * Whether to show login dialog.
+   */
+  dialog: boolean;
 }
 
 // Default state
 const defaultState = (): AuthModuleState => ({
   user: null,
+
+  dialog: false,
 });
 
 // Module state
@@ -87,6 +91,23 @@ const mutations: MutationTree<AuthModuleState> = {
   },
 
   /**
+   * Toggles login dialog state.
+   *
+   * @param {NavigationState} state Module state.
+   * @param {boolean | undefined} [dialog = true] Dialog state.
+   */
+  toggleDialog(
+    state: AuthModuleState,
+    dialog = undefined,
+  ): void {
+    if (dialog === undefined) {
+      state.dialog = !state.dialog;
+    } else {
+      state.dialog = dialog;
+    }
+  },
+
+  /**
    * Resets the state to default.
    *
    * @param {NavigationState} state Module state.
@@ -103,6 +124,19 @@ const mutations: MutationTree<AuthModuleState> = {
 
 // Module actions
 const actions: ActionTree<AuthModuleState, any> = {
+  /**
+   * Opens the login dialog.
+   */
+  openLoginDialog({ commit }): void {
+    commit('toggleDialog', true);
+  },
+
+  /**
+   * Closes the login dialog.
+   */
+  closeLoginDialog({ commit }): void {
+    commit('toggleDialog', false);
+  },
 };
 
 // Module

@@ -15,3 +15,17 @@ span {
 .theme--light.v-application {
   background: #10100F;
 }
+
+.v-app-bar.transparent.v-toolbar {
+  border-bottom: 1px solid rgb(38 38 38) !important;
+}
+
+.v-btn__content {
+  text-transform: none;
+  font-family: "Montserrat", sans-serif;
+}
+
+nav.v-navigation-drawer.v-navigation-drawer--open {
+  border-right: 1px solid rgb(38 38 38) !important;
+  box-shadow: none !important;
+}

@@ -3,9 +3,8 @@
     app
     dark
     flat
-    border
-    color="transparent"
-    :class="$style.component">
+    clipped-left
+    color="transparent">
     <div :class="$style['title-wrapper']">
       <v-icon>
         mdi-carabiner
@@ -21,19 +20,30 @@
     <v-btn
       v-if="!getUser"
       text
-      append-icon="mdi-login-variant">
-      <template v-slot:append>
-        <v-icon color="white" />
-      </template>
-
+      @click="openLoginDialog">
       Login
+    </v-btn>
+
+    <v-btn
+      v-if="getUser"
+      text>
+      Log Tick
+    </v-btn>
+
+    <v-btn
+      v-if="getUser"
+      text>
+      Log Session
     </v-btn>
   </v-app-bar>
 </template>
 
 <script lang="ts">
 // Packages
-import { mapGetters } from 'vuex';
+import {
+  mapActions,
+  mapGetters,
+} from 'vuex';
 import Vue from 'vue';
 
 export default Vue.extend({
@@ -44,13 +54,16 @@ export default Vue.extend({
       'getUser',
     ]),
   },
+
+  methods: {
+    ...mapActions('user', [
+      'openLoginDialog',
+    ]),
+  },
 });
 </script>
 
 <style lang="scss" module>
-.component {
-}
-
 .title-wrapper {
   display: flex;
   cursor: pointer;

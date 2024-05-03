@@ -25,6 +25,11 @@ const schema = new Schema({
     required: true,
   },
 
+  submitted: {
+    type: String,
+    required: true,
+  },
+
   name: {
     type: String,
     required: true,
@@ -52,9 +57,19 @@ const schema = new Schema({
     default: [],
   },
 
+  hrefs: {
+    type: Object,
+    default: {},
+  },
+
   grade: {
     type: Object,
     default: {},
+  },
+
+  danger: {
+    type: String,
+    default: 'G',
   },
 
   private: {
@@ -67,9 +82,9 @@ const schema = new Schema({
     default: false,
   },
 
-  privateLocation: {
-    type: Boolean,
-    default: false,
+  updated: {
+    type: Number,
+    default: Date.now(),
   },
 });
 

@@ -18,6 +18,11 @@ export interface Session {
   crag: string;
 
   /**
+   * Crag areas.
+   */
+  areas: string[];
+
+  /**
    * Date of the session.
    */
   date: number;
@@ -41,6 +46,11 @@ export interface Session {
    * What activites were done.
    */
   activities: ClimbingActivities[];
+
+  /**
+   * Whether this session is outdoors.
+   */
+  outdoors: boolean;
 
   /**
    * How the climber felt.
@@ -71,29 +81,71 @@ export interface Session {
    * Last session.
    */
   next: string;
+
+  /**
+   * Max grade for each activity.
+   */
+  max: ClimbingGrade[];
 }
 
 /**
  * Partner climbed with.
  */
 export interface ClimbingPartner {
+  /**
+   * Database ID.
+   */
+  _id?: string;
+
+  /**
+   * Who this partner belongs to.
+   */
+  user: string;
+
+  /**
+   * Partner first name.
+   */
   firstName: string;
 
-  lastname: string;
+  /**
+   * Partner last name.
+   */
+  lastName: string;
 
+  /**
+   * Whether to display this partner.
+   */
   private: boolean;
 
-  rank: number;
-
+  /**
+   * Total number of hours.
+   */
   hours: number;
 
+  /**
+   * Total number of sessions.
+   */
   sessions: number;
 
+  /**
+   * Outdoor hours.
+   */
   outdoorHours: number;
 
+  /**
+   * Outdoor sessions.
+   */
   outdoorSessions: number;
 
+  /**
+   * Session first logged.
+   */
   met: string;
+
+  /**
+   * Next in the list.
+   */
+  next: string;
 }
 
 /**
@@ -103,7 +155,7 @@ export interface Crag {
   /**
    * Id of the crag.
    */
-  _id: string;
+  _id?: string;
 
   /**
    * Name of the crag.
@@ -149,6 +201,11 @@ export interface Crag {
    * Color of the location.
    */
   color: string;
+
+  /**
+   * Address to crag.
+   */
+  address: string;
 
   /**
    * External links.
@@ -198,7 +255,7 @@ export interface Area {
   /**
    * Id of the area.
    */
-  _id: string;
+  _id?: string;
 
   /**
    * What crag this area belongs to.
@@ -243,7 +300,7 @@ export interface Area {
   /**
    * Available climbing activities.
    */
-  activities: ClimbingActivities;
+  activities: ClimbingActivities[];
 
   /**
    * Whether this area contains private inforomation.
@@ -256,11 +313,6 @@ export interface Area {
   privateName: boolean;
 
   /**
-   * Whether this location contains private data.
-   */
-  privateLocation: boolean;
-
-  /**
    * Associated media.
    */
   media: string[];
@@ -269,16 +321,25 @@ export interface Area {
 /**
  * Types of rocks that contain routes.
  */
-export type RockType = 'boulder' | 'wall';
+export type RockType = 'boulder' | 'wall' | '';
 
 /**
  * A rock that has routes on it.
  */
 export interface Rock {
-  _id: string;
+  /**
+   * Database ID.
+   */
+  _id?: string;
 
+  /**
+   * Crag this rock is in.
+   */
   crag: string;
 
+  /**
+   * Area this rock is in.
+   */
   area: string;
 
   /**
@@ -337,11 +398,6 @@ export interface Rock {
   privateName: boolean;
 
   /**
-   * Whether this location contains private data.
-   */
-  privateLocation: boolean;
-
-  /**
    * Associated media.
    */
   media: string[];
@@ -367,6 +423,11 @@ export interface Route {
    * Area this route is at.
    */
   area: string;
+
+  /**
+   * User that submitted.
+   */
+  submitted: string;
 
   /**
    * Rock this route is on.
@@ -399,6 +460,16 @@ export interface Route {
   media: string[];
 
   /**
+   * Links.
+   */
+  hrefs: ExternalHref;
+
+  /**
+   * How dangerous is this.
+   */
+  danger: Danger;
+
+  /**
    * Grade of item.
    */
   grade: GradeSuggestions;
@@ -414,9 +485,9 @@ export interface Route {
   privateName: boolean;
 
   /**
-   * Whether this location contains private data.
+   * When this was updated.
    */
-  privateLocation: boolean;
+  updated: number;
 }
 
 /**
@@ -477,6 +548,16 @@ export interface Tick {
    * Whether to feature on profile.
    */
   feature: boolean;
+
+  /**
+   * Given rating.
+   */
+  rating: number;
+
+  /**
+   * Suggested grade.
+   */
+  gradeSuggestion: ClimbingGrade;
 }
 
 /**
@@ -491,7 +572,7 @@ interface Media {
   /**
    * Id of media.
    */
-  id: string;
+  _id?: string;
 
   /**
    * Type of media.
@@ -690,7 +771,8 @@ export type ClimbingActivities = 'sport'
 | 'alpine'
 | 'aid'
 | 'free-solo'
-| 'speed';
+| 'speed'
+| '';
 
 /**
  * Types of grading systems.
@@ -705,10 +787,42 @@ export type GradingSystem = 'v-scale'
 | 'circuit-grading'
 | 'everything-v3';
 
+export type Danger = 'G'
+| 'PG'
+| 'PG-13'
+| 'R'
+| 'X'
+| '';
+
 /**
  * User object.
  */
-export interface User {
+export interface User extends PublicUser {
+  /**
+   * User's password.
+   */
+  password: string;
+
+  /**
+   * User's email.
+   */
+  email: string;
+
+  /**
+   * Whether the user is an admin.
+   */
+  admin: boolean;
+};
+
+/**
+ * Public user object.
+ */
+export interface PublicUser {
+  /**
+   * Database ID.
+   */
+  _id?: string;
+
   /**
    * User's username.
    */
@@ -720,6 +834,11 @@ export interface User {
   displayName: string;
 
   /**
+   * User privacy.
+   */
+  privacy: PrivacySetting;
+
+  /**
    * Image of user.
    */
   image: string;
@@ -728,4 +847,65 @@ export interface User {
    * External HREFs.
    */
   hrefs: ExternalHref;
+
+  /**
+   * User height.
+   */
+  height: number;
+
+  /**
+   * User weight.
+   */
+  weight: number;
+
+  /**
+   * When the user started climbing.
+   */
+  started: number;
+
+  /**
+   * When they created an account.
+   */
+  created: number;
+
+  /**
+   * User activities.
+   */
+  activities: ClimbingActivities[];
+
+  /**
+   * User max grade.
+   */
+  max: ClimbingGrade[];
+
+  /**
+   * User birthday.
+   */
+  born: number;
+
+  /**
+   * Where is home.
+   */
+  home: string;
 };
+
+export type PrivacySetting = 'public'
+| 'unlisted'
+| 'private';
+
+export interface Token {
+  /**
+   * Token.
+   */
+  token: string;
+
+  /**
+   * User for session.
+   */
+  user: string;
+
+  /**
+   * When this session was created.
+   */
+  created: number;
+}

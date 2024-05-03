@@ -17,7 +17,7 @@
           density="compact"
           :class="$style['close-button']"
           :dark="true"
-          icon="mdi-close"
+          icon
           @click="close">
           <v-icon small>mdi-close</v-icon>
         </v-btn>
@@ -116,6 +116,7 @@ export default Vue.extend({
     .window {
       animation: fade-in .3s ease;
       display: flex;
+      flex-direction: column;
     }
   }
 

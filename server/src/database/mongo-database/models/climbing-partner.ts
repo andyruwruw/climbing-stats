@@ -5,6 +5,11 @@ import {
 } from 'mongoose';
 
 const schema = new Schema({
+  user: {
+    type: String,
+    required: true,
+  },
+
   firstName: {
     type: String,
     required: true,
@@ -18,11 +23,6 @@ const schema = new Schema({
   private: {
     type: Boolean,
     default: false,
-  },
-
-  rank: {
-    type: Number,
-    default: 1,
   },
 
   hours: {
@@ -46,6 +46,11 @@ const schema = new Schema({
   },
 
   met: {
+    type: String,
+    default: '',
+  },
+
+  next: {
     type: String,
     default: '',
   },

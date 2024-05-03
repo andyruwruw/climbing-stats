@@ -1,6 +1,14 @@
 // Local Imports
 import {
-  PlaylistDataAccessObject,
+  AreaDataAccessObject,
+  ClimbingPartnerDataAccessObject,
+  CragDataAccessObject,
+  MediaDataAccessObject,
+  RockDataAccessObject,
+  RouteDataAccessObject,
+  SessionDataAccessObject,
+  TickDataAccessObject,
+  TokenDataAccessObject,
   UserDataAccessObject,
 } from './daos';
 import { Database } from '../database';
@@ -15,7 +23,15 @@ export class CacheDatabase extends Database {
   constructor() {
     super();
 
-    this.playlists = new PlaylistDataAccessObject();
+    this.areas = new AreaDataAccessObject();
+    this.climbingPartners = new ClimbingPartnerDataAccessObject();
+    this.crags = new CragDataAccessObject();
+    this.media = new MediaDataAccessObject();
+    this.rocks = new RockDataAccessObject();
+    this.routes = new RouteDataAccessObject();
+    this.sessions = new SessionDataAccessObject();
+    this.ticks = new TickDataAccessObject();
+    this.tokens = new TokenDataAccessObject();
     this.users = new UserDataAccessObject();
   }
 

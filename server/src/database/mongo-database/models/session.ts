@@ -15,6 +15,12 @@ const schema = new Schema({
     required: true,
   },
 
+  areas: {
+    type: Array,
+    of: String,
+    default: [],
+  },
+
   date: {
     type: Number,
     default: Date.now(),
@@ -39,6 +45,11 @@ const schema = new Schema({
     type: Array,
     of: String,
     default: [],
+  },
+
+  outdoors: {
+    type: Boolean,
+    default: false,
   },
 
   felt: {
@@ -71,6 +82,12 @@ const schema = new Schema({
   next: {
     type: String,
     default: '',
+  },
+
+  max: {
+    type: Array,
+    of: String,
+    default: [],
   },
 });
 

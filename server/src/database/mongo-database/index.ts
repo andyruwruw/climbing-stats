@@ -6,15 +6,22 @@ import mongoose, {
 
 // Local Imports
 import {
-  PlaylistDataAccessObject,
+  AreaDataAccessObject,
+  ClimbingPartnerDataAccessObject,
+  CragDataAccessObject,
+  MediaDataAccessObject,
+  RockDataAccessObject,
+  RouteDataAccessObject,
+  SessionDataAccessObject,
+  TickDataAccessObject,
+  TokenDataAccessObject,
   UserDataAccessObject,
 } from './daos';
 import { MESSAGE_DATABASE_CONNECTION_SUCCESS } from '../../config/messages';
-import { Database } from '../database';
-import DatabaseUrlMissingError from '../../errors/database-url-missing';
 import { Environment } from '../../helpers/environment';
+import { Database } from '../database';
 import { Monitor } from '../../helpers/monitor';
-import { TokenDataAccessObject } from './daos/token';
+import DatabaseUrlMissingError from '../../errors/database-url-missing';
 
 mongoose.set('strictQuery', false);
 
@@ -28,7 +35,14 @@ export class MongoDatabase extends Database {
   constructor() {
     super();
 
-    this.playlists = new PlaylistDataAccessObject();
+    this.areas = new AreaDataAccessObject();
+    this.climbingPartners = new ClimbingPartnerDataAccessObject();
+    this.crags = new CragDataAccessObject();
+    this.media = new MediaDataAccessObject();
+    this.rocks = new RockDataAccessObject();
+    this.routes = new RouteDataAccessObject();
+    this.sessions = new SessionDataAccessObject();
+    this.ticks = new TickDataAccessObject();
     this.tokens = new TokenDataAccessObject();
     this.users = new UserDataAccessObject();
   }

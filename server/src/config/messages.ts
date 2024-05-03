@@ -51,6 +51,37 @@ export const MESSAGE_HANDLER_PARAMETER_MISSING = (
 ) => `${parameter} for ${item} not provided`;
 
 /**
+ * Error for weak password.
+ * 
+ * @constant
+ */
+export const MESSAGE_PASSWORD_WEAK = 'Your password does not meet minimum requirements.';
+
+/**
+ * Error message thrown when an item already exists.
+ * 
+ * @param {string} item Item attempted to be found or updated.
+ * @param {string} parameter Name of parameter conflict.
+ * @returns {string} Error message.
+ */
+export const MESSAGE_HANDLER_ITEM_EXISTS = (
+  item: string,
+  parameter: string,
+) => `${item} with that ${parameter} already exists!`;
+
+/**
+ * Error message thrown when an item doesn't exist.
+ * 
+ * @param {string} item Item attempted to be found or updated.
+ * @param {string} parameter Name of parameter conflict.
+ * @returns {string} Error message.
+ */
+export const MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST = (
+  item: string,
+  parameter: string,
+) => `${item} with that ${parameter} doesn't exist!`;
+
+/**
  * Error for invalid authentication request.
  * 
  * @constant
@@ -80,7 +111,7 @@ export const MESSAGE_MISSING_REQUEST_ID = 'Missing callback code.';
 
 /**
  * Authentication server error message.
- * 
+ * /
  * @constant
  */
 export const MESSAGE_UNAUTHORIZED = 'Not a valid user session.';
@@ -91,3 +122,17 @@ export const MESSAGE_UNAUTHORIZED = 'Not a valid user session.';
  * @constant
  */
 export const MESSAGE_HANDLER_NOT_FOUND_ERROR = 'Handler was not found';
+
+/**
+ * Error for password mismatch.
+ * 
+ * @constant
+ */
+export const MESSAGE_AUTHENTICATION_INCORRECT = 'Username or password incorrect.';
+
+/**
+ * Error for lack of permission.
+ * 
+ * @constant
+ */
+export const MESSAGE_NO_PERMISSION = 'You don\'t have permission to do that!';

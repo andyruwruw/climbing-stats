@@ -1,8 +1,76 @@
 <template>
   <template-dialog
-    title="Login to your account"
+    :title="title"
     :show="dialog"
     @close="close">
+    <div :class="$style.content">
+      <v-text-field
+        v-if="type === 'register'"
+        v-model="email"
+        dark
+        outlined
+        hide-details
+        dense
+        placeholder="Email Address (Not Required)" />
+
+      <v-text-field
+        v-if="type === 'register'"
+        v-model="fullName"
+        dark
+        outlined
+        hide-details
+        dense
+        placeholder="Full Name *" />
+
+      <v-text-field
+        v-model="username"
+        dark
+        outlined
+        hide-details
+        dense
+        placeholder="Username *" />
+
+      <v-text-field
+        v-model="password"
+        dark
+        outlined
+        hide-details
+        dense
+        type="password"
+        placeholder="Password *" />
+
+      <v-text-field
+        v-if="type === 'register'"
+        v-model="passwordAgain"
+        dark
+        outlined
+        hide-details
+        dense
+        type="password"
+        placeholder="Repeat Password*" />
+
+      <span
+        v-if="error"
+        :class="$style.error">
+        {{ error }}
+      </span>
+
+      <div :class="$style.actions">
+        <v-btn
+          dark
+          color="rgb(38, 38, 38)"
+          @click="switchLoginType">
+          {{ switchLabel }}
+        </v-btn>
+
+        <v-btn
+          :dark="disabled"
+          color="white"
+          :disabled="disabled">
+          {{ submitLabel }}
+        </v-btn>
+      </div>
+    </div>
   </template-dialog>
 </template>
 
@@ -24,10 +92,91 @@ export default Vue.extend({
     TemplateDialog,
   },
 
+  data: () => ({
+    /**
+     * Error message.
+     */
+    error: '' as string,
+
+    /**
+     * Type of login.
+     */
+    type: 'login' as string,
+
+    /**
+     * User username.
+     */
+    username: '' as string,
+
+    /**
+     * User password.
+     */
+    password: '' as string,
+
+    /**
+     * User password again.
+     */
+    passwordAgain: '' as string,
+
+    /**
+     * User full name.
+     */
+    fullName: '' as string,
+
+    /**
+     * User email.
+     */
+    email: '' as string,
+  }),
+
   computed: {
     ...mapState('user', [
       'dialog',
     ]),
+
+    /**
+     * Text for other.
+     */
+    switchLabel(): string {
+      if (this.type === 'login') {
+        return 'Register Instead';
+      }
+      return 'Login Instead';
+    },
+
+    /**
+     * Text for submit button.
+     */
+    submitLabel(): string {
+      if (this.type === 'login') {
+        return 'Login';
+      }
+      return 'Register';
+    },
+
+    /**
+     * Whether the user can submit.
+     */
+    disabled(): boolean {
+      if (this.type === 'login') {
+        return !(this.username.length && this.password.length);
+      }
+      return !(this.username.length
+        && this.password.length
+        && this.fullName
+        && this.passwordAgain.length
+        && this.password === this.passwordAgain);
+    },
+
+    /**
+     * Dialog title.
+     */
+    title(): string {
+      if (this.type === 'login') {
+        return 'Login to your account';
+      }
+      return 'Register a new account';
+    },
   },
 
   methods: {
@@ -38,14 +187,77 @@ export default Vue.extend({
     /**
      * Closes the dialog.
      */
-    close() {
+    close(): void {
       this.closeLoginDialog();
+    },
+
+    /**
+     * Switch login mode.
+     */
+    switchLoginType(): void {
+      this.type = this.type === 'login' ? 'register' : 'login';
+    },
+  },
+
+  watch: {
+    /**
+     * Make sure that password works.
+     */
+    password() {
+      if (!(this.password.length >= 8
+        && /\d/.test(this.password)
+        && /[A-Z]/.test(this.password)
+        && /[!#$%&*+\-:;<=>?@^~|]/.test(this.password)
+      ) && this.password.length) {
+        this.error = 'Password must be 8 or more characters, and include a number, capital letters and a special character! I store irreversibly encrypted passwords for safety, but they gotta be strong.';
+      } else if (this.error) {
+        this.error = '';
+      }
+    },
+
+    /**
+     * Watcher for password.
+     */
+    passwordAgain() {
+      if (this.passwordAgain !== this.password) {
+        this.error = 'Passwords do not match!';
+      } else if (this.error) {
+        this.error = '';
+      }
     },
   },
 });
 </script>
 
 <style lang="scss" module>
-.component {
+.content {
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - 2rem - 48px);
+  max-width: 500px;
+  margin-top: 1.2rem;
+  gap: 1.2rem;
+}
+
+.actions {
+  justify-content: flex-end;
+  display: flex;
+  gap: 1rem;
+  margin-top: .8rem;
+
+  button {
+    width: 33%;
+    min-width: 80px;
+  }
+}
+
+.error {
+  font-size: .8rem;
+  padding: .6rem;
+  border-radius: .2rem;
+  color: rgb(255, 136, 136);
+  border: 1px solid rgba(255, 0, 0, 0.365);
+  background: rgba(255, 81, 81, 0.061);
+  line-height: 2;
 }
 </style>

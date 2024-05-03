@@ -2,24 +2,24 @@
 import { Model } from 'mongoose';
 
 // Local Imports
-import { PlaylistModel } from '../models';
+import { MediaModel } from '../models';
 import { DataAccessObject } from './dao';
 
 // Types
-import { Playlist as PlaylistInterface } from '../../../types/tables';
+import { Media as MediaInterface } from '../../../types/tables';
 import { DataAccessObjectInterface as DataAccessObjectInterface } from '../../../types/database';
 
 /**
- * Data access object for Playlists.
+ * Data access object for Medias.
  */
-export class PlaylistDataAccessObject
-  extends DataAccessObject<PlaylistInterface>
-  implements DataAccessObjectInterface<PlaylistInterface> {
+export class MediaDataAccessObject
+  extends DataAccessObject<MediaInterface>
+  implements DataAccessObjectInterface<MediaInterface> {
   /**
    * Retrieves mongoose Model for DataAccessObject.
    */
   _getModel(): Model<any, Record<string, any>, Record<string, any>, Record<string, any>> {
-    return PlaylistModel;
+    return MediaModel;
   }
 
   /**

@@ -46,6 +46,11 @@ const schema = new Schema({
     default: '',
   },
 
+  address: {
+    type: String,
+    default: '',
+  },
+
   color: {
     type: String,
     default: '#FF0000',

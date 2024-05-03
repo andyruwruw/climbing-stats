@@ -128,7 +128,7 @@ export default Vue.extend({
     padding-right: 1rem;
     margin-top: 1.5rem;
     margin-bottom: .5rem;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   button {

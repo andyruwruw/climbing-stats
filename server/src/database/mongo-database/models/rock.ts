@@ -72,11 +72,6 @@ const schema = new Schema({
     default: false,
   },
 
-  privateLocation: {
-    type: Boolean,
-    default: false,
-  },
-
   media: {
     type: Array,
     of: String,

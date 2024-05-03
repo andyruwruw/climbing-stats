@@ -12,6 +12,7 @@ import {
   Route,
   Session,
   Tick,
+  Token,
   User,
 } from '../types/tables';
 import { DataAccessObjectInterface } from '../types/database';
@@ -41,29 +42,30 @@ export class Database {
    */
   media: DataAccessObjectInterface<Media> = new DataAccessObject<Media>();
 
-
   /**
    * Data access object for Rocks.
    */
   rocks: DataAccessObjectInterface<Rock> = new DataAccessObject<Rock>();
-
 
   /**
    * Data access object for Routes.
    */
   routes: DataAccessObjectInterface<Route> = new DataAccessObject<Route>();
 
-
   /**
    * Data access object for Sessions.
    */
   sessions: DataAccessObjectInterface<Session> = new DataAccessObject<Session>();
 
-
   /**
    * Data access object for Ticks.
    */
   ticks: DataAccessObjectInterface<Tick> = new DataAccessObject<Tick>();
+
+  /**
+   * Data access object for Users.
+   */
+  tokens: DataAccessObjectInterface<Token> = new DataAccessObject<Token>();
 
   /**
    * Data access object for Users.

@@ -29,3 +29,10 @@ export const DATABASE_TYPE = {
   'MONGO_LOCAL': 'mongo-local',
   'CACHE': 'cache',
 };
+
+/**
+ * Cookie name.
+ * 
+ * @constant
+ */
+export const COOKIE_NAME = 'climbing_stats_cookie';

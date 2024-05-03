@@ -35,6 +35,11 @@ const schema = new Schema({
     default: '',
   },
 
+  attempts: {
+    type: Number,
+    default: -1,
+  },
+
   laps: {
     type: String,
     default: '',
@@ -49,6 +54,16 @@ const schema = new Schema({
   feature: {
     type: Boolean,
     default: false,
+  },
+
+  rating: {
+    type: Number,
+    default: -1,
+  },
+
+  gradeSuggestion: {
+    type: String,
+    default: '',
   },
 });
 

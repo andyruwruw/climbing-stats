@@ -2,15 +2,15 @@
 import { DataAccessObject } from './dao';
 
 // Types
-import { Playlist as PlaylistInterface } from '../../../types/tables';
+import { Tick as TickInterface } from '../../../types/tables';
 import { DataAccessObjectInterface as DataAccessObjectInterface } from '../../../types/database';
 
 /**
- * Data access object for Playlists.
+ * Data access object for Ticks.
  */
-export class PlaylistDataAccessObject
-  extends DataAccessObject<PlaylistInterface>
-  implements DataAccessObjectInterface<PlaylistInterface> {
+export class TickDataAccessObject
+  extends DataAccessObject<TickInterface>
+  implements DataAccessObjectInterface<TickInterface> {
   /**
    * Retrieves default sort value.
    *
@@ -18,7 +18,7 @@ export class PlaylistDataAccessObject
    */
   _getTimeSort() {
     return {
-      updated: -1,
+      hours: -1,
     };
   }
 }

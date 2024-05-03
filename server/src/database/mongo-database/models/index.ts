@@ -7,4 +7,5 @@ export { RockModel } from './rock';
 export { RouteModel } from './route';
 export { SessionModel } from './session';
 export { TickModel } from './tick';
+export { TokenModel } from './token';
 export { UserModel } from './user';

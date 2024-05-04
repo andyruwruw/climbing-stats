@@ -74,6 +74,7 @@ export class EditAreaHandler extends Handler {
         res.status(401).send({
           error: MESSAGE_UNAUTHORIZED,
         });
+        return;
       }
 
       const update = {

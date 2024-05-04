@@ -6,6 +6,7 @@ import {
 
 // Local Imports
 import { handleCors } from '../../src/helpers/cors';
+import ROUTES from '../../src/handler';
 
 /**
  * Routes all incoming Vercel Serverless Function requests to the appropriate endpoint.
@@ -35,4 +36,14 @@ export default async function (
     res.send(204);
     return;
   }
+
+  // Instantiate handler.
+  const handler = new ROUTES[item as string][action as string]();
+  await handler.connectDatabase();
+
+  // Execute function.
+  await handler.execute(
+    req,
+    res,
+  );
 }

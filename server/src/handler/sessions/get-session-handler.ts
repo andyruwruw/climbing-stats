@@ -1,5 +1,5 @@
 // Local Imports
-import { MESSAGE_INTERNAL_SERVER_ERROR } from '../../config/messages';
+import { MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST, MESSAGE_HANDLER_PARAMETER_MISSING, MESSAGE_INTERNAL_SERVER_ERROR } from '../../config/messages';
 import { Monitor } from '../../helpers/monitor';
 import { Handler } from '../handler';
 
@@ -9,12 +9,12 @@ import {
   ServerResponse,
 } from '../../types';
 import { validate } from '@/helpers/authentication';
-import { Route } from '@/types/tables';
+import { Area } from '@/types/tables';
 
 /**
- * Retrieves a rock.
+ * Rretrieves a user's session.
  */
-export class GetRockHandler extends Handler {
+export class GetSessionHandler extends Handler {
   /**
    * Executes the handler.
    *
@@ -36,16 +36,16 @@ export class GetRockHandler extends Handler {
 
       if (!id) {
         res.status(400).send({
-          error: MESSAGE_HANDLER_PARAMETER_MISSING('rock', 'ID'),
+          error: MESSAGE_HANDLER_PARAMETER_MISSING('session', 'ID'),
         });
         return;
       }
 
-      const rock = await Handler.database.rocks.findById(id as string);
+      const session = await Handler.database.sessions.findById(id as string);
 
-      if (!rock) {
+      if (!session) {
         res.status(404).send({
-          error: MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST('rock', 'ID'),
+          error: MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST('session', 'ID'),
         });
         return;
       }
@@ -54,39 +54,37 @@ export class GetRockHandler extends Handler {
 
       const promises = [];
 
-      promises.push(Handler.database.crags.findById(rock.crag));
-      promises.push(Handler.database.areas.findById(rock.area));
-      promises.push(Handler.database.routes.find({ rock: id }));
+      promises.push(Handler.database.crags.findById(session.crag));
+      promises.push(Handler.database.areas.find({
+        areas: {
+          $in: session.areas,
+        }
+      }));
 
       await Promise.all(promises);
 
       const [
         crag,
-        area,
-        routes,
+        areas,
       ] = promises;
 
       res.status(200).send({
-        rock: Handler.applyRockPrivacy(
-          rock,
+        areas: (await areas).map((area: Area) => (Handler.applyAreaPrivacy(
+          area,
           user,
-        ),
-        area: Handler.applyAreaPrivacy(
-          await area,
-          user,
-        ),
+        ))),
         crag: Handler.applyCragPrivacy(
           await crag,
           user,
         ),
-        routes: (await routes).map((route: Route) => (Handler.applyRoutePrivacy(
-          route,
+        session: Handler.applySessionPrivacy(
+          session,
           user,
-        ))),
+        ),
       });
     } catch (error) {
       Monitor.log(
-        GetRockHandler,
+        GetSessionHandler,
         `${error}`,
         Monitor.Layer.WARNING,
       );
@@ -98,11 +96,3 @@ export class GetRockHandler extends Handler {
     }
   }
 }
-function MESSAGE_HANDLER_PARAMETER_MISSING(arg0: string, arg1: string) {
-  throw new Error('Function not implemented.');
-}
-
-function MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST(arg0: string, arg1: string) {
-  throw new Error('Function not implemented.');
-}
-

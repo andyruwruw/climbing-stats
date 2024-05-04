@@ -25,6 +25,11 @@ const schema = new Schema({
     default: false,
   },
 
+  privateName: {
+    type: Boolean,
+    default: false,
+  },
+
   hours: {
     type: Number,
     default: 0,

@@ -10,7 +10,7 @@ export const DEVELOPMENT_URL = 'http://localhost:8080';
  * 
  * @constant
  */
-export const PRODUCTION_URL = 'https://playlist-partner-hosting.vercel.app';
+export const PRODUCTION_URL = 'http://localhost:8080';
 
 /**
  * Authentication salt work factor.

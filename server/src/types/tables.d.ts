@@ -86,6 +86,26 @@ export interface Session {
    * Max grade for each activity.
    */
   max: ClimbingGrade[];
+
+  /**
+   * Whether to private the partners.
+   */
+  privatePartners: boolean;
+
+  /**
+   * Whether the session is private.
+   */
+  private: boolean;
+
+  /**
+   * Whether to private the location.
+   */
+  privateCrag: boolean;
+
+  /**
+   * Whether to private details.
+   */
+  privateDetails: boolean;
 }
 
 /**
@@ -116,6 +136,11 @@ export interface ClimbingPartner {
    * Whether to display this partner.
    */
   private: boolean;
+
+  /**
+   * Whether to display this partner.
+   */
+  privateName: boolean;
 
   /**
    * Total number of hours.

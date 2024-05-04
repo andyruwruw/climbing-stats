@@ -3,6 +3,7 @@ import {
   MESSAGE_INTERNAL_SERVER_ERROR,
   MESSAGE_UNAUTHORIZED,
 } from '../../config/messages';
+import { validate } from '../../helpers/authentication';
 import { Monitor } from '../../helpers/monitor';
 import { Handler } from '../handler';
 
@@ -11,7 +12,6 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { validate } from '@/helpers/authentication';
 
 /**
  * Creates a new climbing partner.
@@ -38,6 +38,7 @@ export class CreateClimbingPartnerHandler extends Handler {
         firstName = '?',
         lastName = '?',
         isPrivate = true,
+        privateName = true,
         hours = -1,
         sessions = -1,
         outdoorHours = -1,
@@ -58,6 +59,7 @@ export class CreateClimbingPartnerHandler extends Handler {
         firstName,
         lastName,
         private: isPrivate,
+        privateName,
         hours,
         sessions,
         outdoorHours,
@@ -78,6 +80,7 @@ export class CreateClimbingPartnerHandler extends Handler {
         firstName,
         lastName,
         private: isPrivate,
+        privateName,
         hours,
         sessions,
         outdoorHours,

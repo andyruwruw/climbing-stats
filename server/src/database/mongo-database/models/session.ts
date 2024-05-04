@@ -89,6 +89,21 @@ const schema = new Schema({
     of: String,
     default: [],
   },
+
+  private: {
+    type: Boolean,
+    default: true,
+  },
+
+  privateCrag: {
+    type: Boolean,
+    default: true,
+  },
+
+  privateDetails: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 export const SessionModel = model('Session', schema);

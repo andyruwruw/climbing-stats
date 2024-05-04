@@ -13,11 +13,17 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
+import {
+  Area,
+  Crag,
+  Rock,
+  Route,
+} from '../../types/tables';
 
 /**
- * Retrieves a route.
+ * Retrieves a piece of media.
  */
-export class GetRouteHandler extends Handler {
+export class GetMediaHandler extends Handler {
   /**
    * Executes the handler.
    *
@@ -39,16 +45,16 @@ export class GetRouteHandler extends Handler {
 
       if (!id) {
         res.status(400).send({
-          error: MESSAGE_HANDLER_PARAMETER_MISSING('route', 'ID'),
+          error: MESSAGE_HANDLER_PARAMETER_MISSING('media', 'ID'),
         });
         return;
       }
 
-      const route = await Handler.database.routes.findById(id as string);
+      const media = await Handler.database.media.findById(id as string);
 
-      if (!route) {
+      if (!media) {
         res.status(404).send({
-          error: MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST('route', 'ID'),
+          error: MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST('media', 'ID'),
         });
         return;
       }
@@ -57,39 +63,42 @@ export class GetRouteHandler extends Handler {
 
       const promises = [];
 
-      promises.push(Handler.database.crags.findById(route.crag));
-      promises.push(Handler.database.areas.findById(route.area));
-      promises.push(Handler.database.rocks.findById(route.rock));
+      promises.push(Handler.database.crags.find({ media: { $all: [ id as string ] } }));
+      promises.push(Handler.database.areas.find({ media: { $all: [ id as string ] } }));
+      promises.push(Handler.database.rocks.find({ media: { $all: [ id as string ] } }));
+      promises.push(Handler.database.routes.find({ media: { $all: [ id as string ] } }));
 
       await Promise.all(promises);
 
       const [
-        crag,
-        area,
-        rock,
+        crags,
+        areas,
+        rocks,
+        routes,
       ] = promises;
 
       res.status(200).send({
-        rock: Handler.applyRockPrivacy(
-          await rock,
+        media,
+        area: (await areas).map((area: Area) => (Handler.applyAreaPrivacy(
+          area,
           user,
-        ),
-        area: Handler.applyAreaPrivacy(
-          await area,
+        ))),
+        crags: (await crags).map((crag: Crag) => (Handler.applyCragPrivacy(
+          crag,
           user,
-        ),
-        crag: Handler.applyCragPrivacy(
-          await crag,
+        ))),
+        rocks: (await rocks).map((rock: Rock) => (Handler.applyRockPrivacy(
+          rock,
           user,
-        ),
-        route: Handler.applyRoutePrivacy(
+        ))),
+        routes: (await routes).map((route: Route) => (Handler.applyRoutePrivacy(
           route,
           user,
-        ),
+        ))),
       });
     } catch (error) {
       Monitor.log(
-        GetRouteHandler,
+        GetMediaHandler,
         `${error}`,
         Monitor.Layer.WARNING,
       );

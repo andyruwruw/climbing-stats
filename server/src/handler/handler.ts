@@ -14,9 +14,11 @@ import {
 import {
   Area,
   ClimbingActivities,
+  ClimbingPartner,
   Crag,
   Rock,
   Route,
+  Session,
   User,
 } from '../types/tables';
 
@@ -172,6 +174,66 @@ export class Handler {
       if (route.privateName || route.private) {
         censored.name = 'Private';
         censored.altNames = [];
+      }
+    }
+  }
+
+  /**
+   * Hides relevant data for climbing partners.
+   */
+  static applyPartnerPrivacy(
+    partner: ClimbingPartner,
+    user: User,
+  ) {
+    const censored = { ...partner };
+
+    if (!user.admin && partner.user !== user.username) {
+      if (partner.private) {
+        censored.hours = -1;
+        censored.sessions = -1;
+        censored.outdoorHours = -1;
+        censored.outdoorSessions = -1;
+        censored.met = '';
+        censored.next = '';
+      }
+      if (partner.privateName || partner.private) {
+        censored.firstName = 'Private';
+        censored.lastName = '';
+      }
+    }
+  }
+
+  /**
+   * Hides relevant data for sessions.
+   */
+  static applySessionPrivacy(
+    session: Session,
+    user: User,
+  ) {
+    const censored = { ...session };
+
+    if (!user.admin && session.user !== user.username) {
+      if (session.private) {
+        censored.date = -1;
+        censored.duration = -1;
+        censored.activities = [];
+        censored.next = '';
+        censored.last = '';
+        censored.media = [];
+      }
+      if (session.privatePartners || session.private) {
+        censored.partners = session.partners.map((partner: string) => 'Logged Partner');
+      }
+      if (session.privateCrag || session.private) {
+        censored.crag = '';
+      }
+      if (session.privateDetails || session.private) {
+        censored.areas = [];
+        censored.start = -1,
+        censored.end = -1,
+        censored.felt = -1;
+        censored.max = [];
+        censored.description = '';
       }
     }
   }

@@ -64,7 +64,7 @@ const schema = new Schema({
     type: Array,
     of: String,
     default: [],
-  },/
+  },
 
   max: {
     type: Array,

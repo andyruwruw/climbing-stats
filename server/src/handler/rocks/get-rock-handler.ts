@@ -8,8 +8,8 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { validate } from '@/helpers/authentication';
-import { Route } from '@/types/tables';
+import { validate } from '../../helpers/authentication';
+import { Route } from '../../types/tables';
 
 /**
  * Retrieves a rock.

@@ -1,5 +1,9 @@
 // Local Imports
-import { MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST, MESSAGE_HANDLER_PARAMETER_MISSING, MESSAGE_INTERNAL_SERVER_ERROR } from '../../config/messages';
+import {
+  MESSAGE_HANDLER_ITEM_DOES_NOT_EXIST,
+  MESSAGE_HANDLER_PARAMETER_MISSING,
+  MESSAGE_INTERNAL_SERVER_ERROR,
+} from '../../config/messages';
 import { Monitor } from '../../helpers/monitor';
 import { Handler } from '../handler';
 
@@ -8,8 +12,8 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { validate } from '@/helpers/authentication';
-import { Area } from '@/types/tables';
+import { validate } from '../../helpers/authentication';
+import { Area } from '../../types/tables';
 
 /**
  * Rretrieves a user's session.

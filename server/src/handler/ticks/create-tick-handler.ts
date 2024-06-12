@@ -1,5 +1,9 @@
 // Local Imports
-import { MESSAGE_HANDLER_PARAMETER_MISSING, MESSAGE_INTERNAL_SERVER_ERROR, MESSAGE_UNAUTHORIZED } from '../../config/messages';
+import {
+  MESSAGE_HANDLER_PARAMETER_MISSING,
+  MESSAGE_INTERNAL_SERVER_ERROR,
+  MESSAGE_UNAUTHORIZED,
+} from '../../config/messages';
 import { validate } from '../../helpers/authentication';
 import { Monitor } from '../../helpers/monitor';
 import { Handler } from '../handler';
@@ -9,7 +13,7 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { ClimbingActivities } from '@/types/tables';
+import { ClimbingActivities } from '../../types/tables';
 
 /**
  * Ends a user's session.

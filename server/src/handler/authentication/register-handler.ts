@@ -81,6 +81,8 @@ export class RegisterHandler extends Handler {
         return;
       }
 
+      console.log(fullName, username, password);
+
       const existing = await Handler.database.users.findOne({
         username,
       });

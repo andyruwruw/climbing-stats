@@ -36,6 +36,8 @@ export class LogoutHandler extends Handler {
       );
       const cookie = getCookie(req);
 
+      const user = await userPromise;
+
       // No session detected.
       if (!cookie || !user) {
         res.status(200).send({});

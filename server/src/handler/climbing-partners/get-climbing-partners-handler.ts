@@ -12,7 +12,7 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { ClimbingPartner } from '@/types/tables';
+import { ClimbingPartner } from '../../types/tables';
 
 /**
  * Ends a user's session.

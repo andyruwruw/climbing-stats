@@ -6,6 +6,9 @@ import {
   MutationTree,
 } from 'vuex';
 
+// Local Imports
+import api from '../../api';
+
 // Types
 import { User } from '../../types';
 
@@ -125,17 +128,91 @@ const mutations: MutationTree<AuthModuleState> = {
 // Module actions
 const actions: ActionTree<AuthModuleState, any> = {
   /**
+   * Logs a user in.
+   *
+   * @param {string} payload.username User's username.
+   * @param {string} payload.password User's password.
+   * @returns {Promise<void>} Promise of the action.
+   */
+  async login(
+    { commit },
+    {
+      username,
+      password,
+    },
+  ): Promise<void> {
+    try {
+      const response = await api.authentication.login(
+        username,
+        password,
+      );
+
+      if (response) {
+        commit(
+          'setUser',
+          response,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  /**
+   * Registers a user.
+   *
+   * @param {string} payload.username User's username.
+   * @param {string} payload.password User's password.
+   * @returns {Promise<void>} Promise of the action.
+   */
+  async register(
+    { commit },
+    {
+      fullName,
+      username,
+      password,
+      privacy = undefined,
+      email = undefined,
+    },
+  ): Promise<void> {
+    try {
+      const response = await api.authentication.register(
+        fullName,
+        username,
+        password,
+        privacy,
+        email,
+      );
+
+      if (response) {
+        commit(
+          'setUser',
+          response,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  /**
    * Opens the login dialog.
    */
   openLoginDialog({ commit }): void {
-    commit('toggleDialog', true);
+    commit(
+      'toggleDialog',
+      true,
+    );
   },
 
   /**
    * Closes the login dialog.
    */
   closeLoginDialog({ commit }): void {
-    commit('toggleDialog', false);
+    commit(
+      'toggleDialog',
+      false,
+    );
   },
 };
 

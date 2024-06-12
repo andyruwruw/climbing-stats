@@ -66,7 +66,8 @@
         <v-btn
           :dark="disabled"
           color="white"
-          :disabled="disabled">
+          :disabled="disabled"
+          @click="submit">
           {{ submitLabel }}
         </v-btn>
       </div>
@@ -106,27 +107,27 @@ export default Vue.extend({
     /**
      * User username.
      */
-    username: '' as string,
+    username: 'andyruwruw' as string,
 
     /**
      * User password.
      */
-    password: '' as string,
+    password: 'Password123!' as string,
 
     /**
      * User password again.
      */
-    passwordAgain: '' as string,
+    passwordAgain: 'Password123!' as string,
 
     /**
      * User full name.
      */
-    fullName: '' as string,
+    fullName: 'Andrew Young' as string,
 
     /**
      * User email.
      */
-    email: '' as string,
+    email: 'andrew@youngshome.com' as string,
   }),
 
   computed: {
@@ -182,7 +183,28 @@ export default Vue.extend({
   methods: {
     ...mapActions('user', [
       'closeLoginDialog',
+      'login',
+      'register',
     ]),
+
+    /**
+     * Submit info.
+     */
+    submit(): void {
+      if (this.type === 'login') {
+        this.login({
+          username: this.username,
+          password: this.password,
+        });
+      } else {
+        this.register({
+          fullName: this.fullName,
+          username: this.username,
+          password: this.password,
+          email: this.email,
+        });
+      }
+    },
 
     /**
      * Closes the dialog.

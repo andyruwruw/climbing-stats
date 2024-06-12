@@ -49,6 +49,10 @@ export class CreateSessionHandler extends Handler {
         partners = [],
         media = [],
         max = [],
+        privatePartners = true,
+        isPrivate = true,
+        privateCrag = true,
+        privateDetails = true,
       } = req.body;
 
       // Check parameters.
@@ -91,6 +95,10 @@ export class CreateSessionHandler extends Handler {
         last: '',
         next: '',
         max,
+        privatePartners,
+        private: isPrivate,
+        privateCrag,
+        privateDetails,
       });
 
       if (!inserted) {

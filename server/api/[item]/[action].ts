@@ -24,6 +24,8 @@ export default async function (
     action,
   } = req.query;
 
+  console.log(item, action, req.method);
+
   /**
    * Deal with pesky cors.
    */
@@ -40,6 +42,8 @@ export default async function (
   // Instantiate handler.
   const handler = new ROUTES[item as string][action as string]();
   await handler.connectDatabase();
+
+  console.log(handler);
 
   // Execute function.
   await handler.execute(

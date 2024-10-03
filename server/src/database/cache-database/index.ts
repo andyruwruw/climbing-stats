@@ -1,22 +1,36 @@
 // Local Imports
 import {
-  PlaylistDataAccessObject,
-  UserDataAccessObject,
+  AreasDataAccessObject,
+  ClimbingPartnersDataAccessObject,
+  LocationsDataAccessObject,
+  RocksDataAccessObject,
+  RoutesDataAccessObject,
+  SessionsDataAccessObject,
+  TicksDataAccessObject,
+  TokensDataAccessObject,
+  UsersDataAccessObject,
 } from './daos';
-import { Database } from '../database';
+import { AbstractDatabase } from '../abstract-database';
 
 /**
  * Memory database..
  */
-export class CacheDatabase extends Database {
+export class CacheDatabase extends AbstractDatabase {
   /**
    * Instantiates CacheDatabase with correct queries.
    */
   constructor() {
     super();
 
-    this.playlists = new PlaylistDataAccessObject();
-    this.users = new UserDataAccessObject();
+    this.areas = new AreasDataAccessObject();
+    this.climbingPartners = new ClimbingPartnersDataAccessObject();
+    this.locations = new LocationsDataAccessObject();
+    this.rocks = new RocksDataAccessObject();
+    this.routes = new RoutesDataAccessObject();
+    this.sessions = new SessionsDataAccessObject();
+    this.ticks = new TicksDataAccessObject();
+    this.tokens = new TokensDataAccessObject();
+    this.users = new UsersDataAccessObject();
   }
 
   /**

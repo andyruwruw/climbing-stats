@@ -6,6 +6,9 @@ import {
   MutationTree,
 } from 'vuex';
 
+// Local Imports
+import api from '../../api';
+
 // Types
 import { User } from '../../types';
 

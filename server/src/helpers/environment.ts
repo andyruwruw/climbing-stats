@@ -234,4 +234,4 @@ export class Environment {
   static shouldUseMockData(): boolean {
     return process.env.MOCK_DATA === 'true';
   }
-};
+}

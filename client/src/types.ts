@@ -1,18 +1,7 @@
-// TYpes
-import { DatabaseRow } from './database';
-
 /**
- * Types of grading systems.
+ * Basic object.
  */
-export type GradingSystem = 'v-scale'
-| 'yosemite-decimal-system'
-| 'french'
-| 'font'
-| 'uiaa'
-| 'bmc-traditional-grading'
-| 'australian'
-| 'circuit-grading'
-| 'everything-v3';
+export type Dictionary<T> = Record<string, T>;
 
 /**
  * Various colors for grades.
@@ -62,22 +51,62 @@ export type ClimbingGrade = 'VB'
 | number
 | string;
 
-<<<<<<< HEAD:server/src/types/climbs.d.ts
 /**
- * Types of rocks that contain routes.
+ * Various climbing activities.
  */
-export type RockType = 'boulder' | 'wall';
+export type ClimbingActivities = 'sport'
+| 'lead'
+| 'top-rope'
+| 'traditional'
+| 'boulder'
+| 'multi-pitch'
+| 'ice'
+| 'mixed'
+| 'alpine'
+| 'aid'
+| 'free-solo'
+| 'speed'
+| '';
 
 /**
- * Danger of a route.
+ * Types of grading systems.
  */
-export type RouteDanger = ''
+export type GradingSystem = 'v-scale'
+| 'yosemite-decimal-system'
+| 'french'
+| 'font'
+| 'uiaa'
+| 'bmc-traditional-grading'
+| 'australian'
+| 'circuit-grading'
+| 'everything-v3';
+
+export type Danger = 'G'
+| 'PG'
 | 'PG-13'
 | 'R'
 | 'X'
-| number
-| string;
-=======
+| '';
+
+/**
+ * Represents a sesion.
+ */
+export interface Session {
+  /**
+   * ID of the session.
+   */
+  _id?: string;
+
+  /**
+   * Id of the user's whose session this is.
+   */
+  user: string;
+
+  /**
+   * Id of the crag the session was at.
+   */
+  crag: string;
+
   /**
    * Crag areas.
    */
@@ -147,26 +176,6 @@ export type RouteDanger = ''
    * Max grade for each activity.
    */
   max: ClimbingGrade[];
-
-  /**
-   * Whether to private the partners.
-   */
-  privatePartners: boolean;
-
-  /**
-   * Whether the session is private.
-   */
-  private: boolean;
-
-  /**
-   * Whether to private the location.
-   */
-  privateCrag: boolean;
-
-  /**
-   * Whether to private details.
-   */
-  privateDetails: boolean;
 }
 
 /**
@@ -233,21 +242,16 @@ export interface ClimbingPartner {
    */
   next: string;
 }
->>>>>>> refs/remotes/origin/main:server/src/types/tables.d.ts
 
 /**
  * Data related to locations.
  */
-<<<<<<< HEAD:server/src/types/climbs.d.ts
-export interface Location extends DatabaseRow {
-=======
 export interface Crag {
   /**
    * Id of the crag.
    */
   _id?: string;
 
->>>>>>> refs/remotes/origin/main:server/src/types/tables.d.ts
   /**
    * Name of the crag.
    */
@@ -256,7 +260,7 @@ export interface Crag {
   /**
    * Is this the official name?
    */
-  officiallyNamed: boolean;
+  officialName: boolean;
 
   /**
    * Other names this crag is known as.
@@ -271,7 +275,7 @@ export interface Crag {
   /**
    * Main image.
    */
-  image: string | null;
+  image: string;
 
   /**
    * Country this location is in.
@@ -342,33 +346,29 @@ export interface Crag {
 /**
  * A climbing area.
  */
-<<<<<<< HEAD:server/src/types/climbs.d.ts
-export interface Area extends DatabaseRow {
-=======
 export interface Area {
   /**
    * Id of the area.
    */
   _id?: string;
 
->>>>>>> refs/remotes/origin/main:server/src/types/tables.d.ts
   /**
    * What crag this area belongs to.
    */
-  location: string;
+  crag: string;
 
   /**
-   * Name of the crag.
+   * Name of the area.
    */
   name: string;
 
   /**
    * Is this the official name?
    */
-  officiallyNamed: boolean;
+  officialName: boolean;
 
   /**
-   * Other names this crag is known as.
+   * Alternative names of the area.
    */
   altNames: string[];
 
@@ -414,18 +414,6 @@ export interface Area {
 }
 
 /**
-<<<<<<< HEAD:server/src/types/climbs.d.ts
- * A rock that has routes on it.
- */
-export interface Rock extends DatabaseRow {
-  /**
-   * Location of this rock.
-   */
-  location: string;
-
-  /**
-   * Sub-area of the rock.
-=======
  * Types of rocks that contain routes.
  */
 export type RockType = 'boulder' | 'wall' | '';
@@ -446,24 +434,8 @@ export interface Rock {
 
   /**
    * Area this rock is in.
->>>>>>> refs/remotes/origin/main:server/src/types/tables.d.ts
    */
   area: string;
-
-  /**
-   * Name of the crag.
-   */
-  name: string;
-
-  /**
-   * Is this the official name?
-   */
-  officiallyNamed: boolean;
-
-  /**
-   * Other names this crag is known as.
-   */
-  altNames: string[];
 
   /**
    * What type of rock.
@@ -474,6 +446,21 @@ export interface Rock {
    * Types of climbing activity.
    */
   activities: ClimbingActivities[];
+
+  /**
+   * Name of the route.
+   */
+  name: string;
+
+  /**
+   * Is this the official name?
+   */
+  officialName: boolean;
+
+  /**
+   * Alternative names of the area.
+   */
+  altNames: string[];
 
   /**
    * Main image of the area.
@@ -511,8 +498,6 @@ export interface Rock {
   media: string[];
 }
 
-<<<<<<< HEAD:server/src/types/climbs.d.ts
-=======
 export interface Route {
   /**
    * Route ID.
@@ -638,7 +623,7 @@ export interface Tick {
    * Completion.
    */
   status: AttemptStatus;
-  
+
   /**
    * Attempts made.
    */
@@ -673,12 +658,12 @@ export interface Tick {
 /**
  * Types of media.
  */
-type MediaType = 'image' | 'youtube' | 'instagram' | 'website' | 'drive';
+export type MediaType = 'image' | 'youtube' | 'instagram' | 'website' | 'drive';
 
 /**
  * A media element.
  */
-interface Media {
+export interface Media {
   /**
    * Id of media.
    */
@@ -713,7 +698,7 @@ interface Media {
 /**
  * Tick status.
  */
-type AttemptStatus = 'attempt'
+export type AttemptStatus = 'attempt'
 | 'top-roped'
 | 'lead'
 | 'trad'
@@ -729,11 +714,10 @@ type AttemptStatus = 'attempt'
 | 'touch'
 | 'unknown';
 
->>>>>>> refs/remotes/origin/main:server/src/types/tables.d.ts
 /**
  * Grading of an item.
  */
-interface GradeSuggestions {
+export interface GradeSuggestions {
   /**
    * Individuals.
    */
@@ -761,248 +745,100 @@ interface GradeSuggestions {
 }
 
 /**
- * Grading of an item.
+ * References to href of items.
  */
-interface DangerSuggestions {
+export interface ExternalHref {
   /**
-   * Individuals.
+   * Address to item.
    */
-  [key: string]: RouteDanger | undefined;
+  address?: string;
 
   /**
    * Mountain Project link.
    */
-  moutainProject?: RouteDanger;
+  moutainProject?: string;
+
+  /**
+   * Google Maps link.
+   */
+  googleMaps?: string;
 
   /**
    * Website.
    */
-  website?: RouteDanger;
+  website?: string;
 
   /**
    * 8a link.
    */
-  eightA?: RouteDanger;
+  eightA?: string;
 
   /**
    * Sendage link.
    */
-  sendage?: RouteDanger;
+  sendage?: string;
+
+  /**
+   * Raw coordinates.
+   */
+  coordinates?: string;
+
+  /**
+   * Apple maps link.
+   */
+  appleMaps?: string;
+
+  /**
+   * Youtube link.
+   */
+  youtube?: string;
+
+  /**
+   * Vimeo link.
+   */
+  vimeo?: string;
+
+  /**
+   * Instagram link.
+   */
+  instagram?: string;
 }
-
-/**
- * A specific climbing route.
- */
-<<<<<<< HEAD:server/src/types/climbs.d.ts
-export interface Route extends DatabaseRow {
-=======
-export type Color = 'Yellow'
-| 'Green'
-| 'Teal'
-| 'Blue'
-| 'Purple'
-| 'Pink'
-| 'Red'
-| 'Orange'
-| 'White'
-| 'Black';
-
-/**
- * Various types of climbing grade strings.
- */
-export type ClimbingGrade = 'VB'
-| `everything-v3-${number}`
-| 'V-Easy'
-| `V${number}`
-| `V${number}+`
-| `V${number}-`
-| `${string}${number}`
-| `${string}${number}+`
-| `${string}${number}-`
-| `${number}.${number}${string}`
-| `${number}.${number}`
-| `${number}.${number}+`
-| `${number}.${number}-`
-| 'S'
-| 'HS'
-| 'VS'
-| 'HVS'
-| `E${number}`
-| `E${number} ${number}${string}`
-| `A${number}`
-| `A${number}+`
-| `A${number}-`
-| `A/C${number}`
-| `A/C${number}+`
-| `A/C${number}-`
-| `M${number}`
-| `WI ${number}`
-| `${string} ${Color}`
-| number
-| string;
-
-/**
- * Various climbing activities.
- */
-export type ClimbingActivities = 'sport'
-| 'lead'
-| 'top-rope'
-| 'traditional'
-| 'boulder'
-| 'multi-pitch'
-| 'ice'
-| 'mixed'
-| 'alpine'
-| 'aid'
-| 'free-solo'
-| 'speed'
-| '';
-
-/**
- * Types of grading systems.
- */
-export type GradingSystem = 'v-scale'
-| 'yosemite-decimal-system'
-| 'french'
-| 'font'
-| 'uiaa'
-| 'bmc-traditional-grading'
-| 'australian'
-| 'circuit-grading'
-| 'everything-v3';
-
-export type Danger = 'G'
-| 'PG'
-| 'PG-13'
-| 'R'
-| 'X'
-| '';
-
-/**
- * User object.
- */
-export interface User extends PublicUser {
-  /**
-   * User's password.
-   */
-  password: string;
-
-  /**
-   * User's email.
-   */
-  email: string;
-
-  /**
-   * Whether the user is an admin.
-   */
-  admin: boolean;
-};
 
 /**
  * Public user object.
  */
-export interface PublicUser {
+export interface User {
   /**
    * Database ID.
    */
   _id?: string;
 
->>>>>>> refs/remotes/origin/main:server/src/types/tables.d.ts
   /**
-   * Type of climbing activity.
+   * User's username.
    */
-  type: ClimbingActivities;
+  username: string;
 
   /**
-   * Crag this route is at.
+   * Display name.
    */
-  location: string;
+  displayName: string;
 
   /**
-<<<<<<< HEAD:server/src/types/climbs.d.ts
-   * Area this route is at.
-   */
-  area: string;
-
-  /**
-   * Rock this route is on.
-   */
-  rock: string;
-
-  /**
-   * Name of the crag.
-   */
-  name: string;
-
-  /**
-   * Is this the official name?
-   */
-  officiallyNamed: boolean;
-
-  /**
-   * Other names this crag is known as.
-   */
-  altNames: string[];
-
-  /**
-   * Main image of item.
-=======
    * User privacy.
    */
   privacy: PrivacySetting;
 
   /**
    * Image of user.
->>>>>>> refs/remotes/origin/main:server/src/types/tables.d.ts
    */
   image: string;
 
   /**
-   * External links.
+   * External HREFs.
    */
   hrefs: ExternalHref;
 
   /**
-<<<<<<< HEAD:server/src/types/climbs.d.ts
-   * Associated media.
-   */
-  media: string[];
-
-  /**
-   * Grade of item.
-   */
-  grade: GradeSuggestions;
-
-  /**
-   * Whether this location contains private data.
-   */
-  private: boolean;
-
-  /**
-   * Whether this location contains private data.
-   */
-  privateName: boolean;
-
-  /**
-   * Whether this location contains private data.
-   */
-  privateLocation: boolean;
-
-  /**
-   * How dangerous the route is.
-   */
-  danger: DangerSuggestions;
-
-  /**
-   * When this route was updated.
-   */
-  updated: number;
-
-  /**
-   * Who submitted this route.
-   */
-  submitted: string;
-=======
    * User height.
    */
   height: number;
@@ -1041,26 +877,8 @@ export interface PublicUser {
    * Where is home.
    */
   home: string;
-};
+}
 
 export type PrivacySetting = 'public'
 | 'unlisted'
 | 'private';
-
-export interface Token {
-  /**
-   * Token.
-   */
-  token: string;
-
-  /**
-   * User for session.
-   */
-  user: string;
-
-  /**
-   * When this session was created.
-   */
-  created: number;
->>>>>>> refs/remotes/origin/main:server/src/types/tables.d.ts
-}

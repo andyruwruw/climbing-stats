@@ -18,11 +18,18 @@ export interface AuthModuleState extends Record<string, any> {
    * Current logged in user.
    */
   user: User | null;
+
+  /**
+   * Whether to show login dialog.
+   */
+  dialog: boolean;
 }
 
 // Default state
 const defaultState = (): AuthModuleState => ({
   user: null,
+
+  dialog: false,
 });
 
 // Module state
@@ -87,6 +94,23 @@ const mutations: MutationTree<AuthModuleState> = {
   },
 
   /**
+   * Toggles login dialog state.
+   *
+   * @param {NavigationState} state Module state.
+   * @param {boolean | undefined} [dialog = true] Dialog state.
+   */
+  toggleDialog(
+    state: AuthModuleState,
+    dialog = undefined,
+  ): void {
+    if (dialog === undefined) {
+      state.dialog = !state.dialog;
+    } else {
+      state.dialog = dialog;
+    }
+  },
+
+  /**
    * Resets the state to default.
    *
    * @param {NavigationState} state Module state.
@@ -104,100 +128,30 @@ const mutations: MutationTree<AuthModuleState> = {
 // Module actions
 const actions: ActionTree<AuthModuleState, any> = {
   /**
-   * Logs a user in with the website.
+   * Logs a user in.
    *
-   * @param {ActionContext<NavigationState, any>} context Vuex action context.
-   * @param {Record<string, any>} payload Action payload.
    * @param {string} payload.username User's username.
    * @param {string} payload.password User's password.
+   * @returns {Promise<void>} Promise of the action.
    */
-  async login({
-    commit,
-    dispatch,
-  }, {
-    username,
-    password,
-  }): Promise<void> {
+  async login(
+    { commit },
+    {
+      username,
+      password,
+    },
+  ): Promise<void> {
     try {
-      const user = await api.authentication.login(
+      const response = await api.authentication.login(
         username,
         password,
       );
 
-      if (!('message' in user)) {
-        commit('setUser', user);
-        dispatch('navigation/goToHome', undefined, { root: true });
-      } else {
-        dispatch('error/logError', { error: user.message }, { root: true });
-      }
-    } catch (error) {
-      dispatch('error/logError', { error: `${error}` }, { root: true });
-    }
-  },
-
-  /**
-   * Registers a user in with the website.
-   *
-   * @param {ActionContext<NavigationState, any>} context Vuex action context.
-   * @param {Record<string, any>} payload Action payload.
-   */
-  async register({
-    commit,
-    dispatch,
-  }, payload): Promise<void> {
-    let response;
-
-    try {
-      response = await api.authentication.register(
-        payload.username,
-        payload.password,
-        payload.displayName,
-        payload.max || undefined,
-        payload.email || undefined,
-        payload.image || undefined,
-        payload.started || undefined,
-        payload.home || undefined,
-        payload.height || undefined,
-        payload.span || undefined,
-        payload.weight || undefined,
-        payload.age || undefined,
-        payload.privacy || undefined,
-        payload.attemptPrivacy || undefined,
-        payload.sessionPrivacy || undefined,
-        payload.interestPrivacy || undefined,
-        payload.reviewPrivacy || undefined,
-        payload.ratingPrivacy || undefined,
-        payload.shoesPrivacy || undefined,
-      );
-
-      console.log(response);
-
-      if ('username' in response) {
-        commit('setUser', response);
-        dispatch('navigation/goToHome', undefined, { root: true });
-      } else {
-        dispatch('error/logError', { error: response.message }, { root: true });
-      }
-    } catch (error) {
-      dispatch('error/logError', { error: `${response ? (response as ErrorResponse).message : 'Unknown error.'}` }, { root: true });
-    }
-  },
-
-  /**
-   * Checks if user has a current session.
-   *
-   * @param {ActionContext<NavigationState, any>} context Vuex action context.
-   */
-  async checkUser({
-    commit,
-    dispatch,
-  }): Promise<void> {
-    try {
-      const user = await api.authentication.checkUser();
-
-      if (user && !('message' in user)) {
-        commit('setUser', user);
-        dispatch('navigation/goToHome', undefined, { root: true });
+      if (response) {
+        commit(
+          'setUser',
+          response,
+        );
       }
     } catch (error) {
       console.log(error);
@@ -205,17 +159,60 @@ const actions: ActionTree<AuthModuleState, any> = {
   },
 
   /**
-   * Logs a user out and clears state.
+   * Registers a user.
    *
-   * @param {ActionContext<NavigationState, any>} context Vuex action context.
+   * @param {string} payload.username User's username.
+   * @param {string} payload.password User's password.
+   * @returns {Promise<void>} Promise of the action.
    */
-  logout({
-    commit,
-    dispatch,
-  }): void {
-    commit('reset');
-    dispatch('navigation/goToLanding', undefined, { root: true });
-    api.authentication.logout();
+  async register(
+    { commit },
+    {
+      fullName,
+      username,
+      password,
+      privacy = undefined,
+      email = undefined,
+    },
+  ): Promise<void> {
+    try {
+      const response = await api.authentication.register(
+        fullName,
+        username,
+        password,
+        privacy,
+        email,
+      );
+
+      if (response) {
+        commit(
+          'setUser',
+          response,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  /**
+   * Opens the login dialog.
+   */
+  openLoginDialog({ commit }): void {
+    commit(
+      'toggleDialog',
+      true,
+    );
+  },
+
+  /**
+   * Closes the login dialog.
+   */
+  closeLoginDialog({ commit }): void {
+    commit(
+      'toggleDialog',
+      false,
+    );
   },
 };
 

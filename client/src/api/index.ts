@@ -1,22 +1,18 @@
 // Local Imports
 import areas from './areas';
-import authentication from './authentication';
-import climbingPartners from './climbing-partners';
-import crags from './crags';
-import media from './media';
+import locations from './locations';
 import rocks from './rocks';
 import routes from './routes';
 import sessions from './sessions';
 import ticks from './ticks';
+import users from './users';
 
 export default {
   areas,
-  authentication,
-  climbingPartners,
-  crags,
-  media,
+  locations,
   rocks,
   routes,
   sessions,
   ticks,
+  users,
 };

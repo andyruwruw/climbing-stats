@@ -1,203 +1,315 @@
 // Local Imports
-import request from './request';
+import {
+  optionalQueryParams,
+  optionalRequestBody,
+  getRequest,
+} from './request';
+import { CLIMBING_ACTIVITY } from '../config';
 
 // Types
 import {
-  Area,
   ClimbingActivities,
-  Crag,
-  Danger,
-  Dictionary,
   ExternalHref,
   GradeSuggestions,
-  Rock,
-  RockType,
+  Response,
+  DangerSuggestions,
   Route,
+  ClimbingGrade,
+  RouteDanger,
 } from '../types';
 
 /**
- * Creates a new route.
+ * Create a new route.
  *
- * @param {ClimbingActivities} type Type of activity.
- * @param {string} crag Crag the route is in.
+ * @param {string} location Location of the route.
  * @param {string} name Name of the route.
- * @param {string} [area = ''] Area the route is in.
- * @param {string} [rock = ''] Rock the route is on.
- * @param {boolean} [officialName = true] Is this the official name?
- * @param {string[]} [altNames = []] Alternative names.
- * @param {string} [image = ''] Image of the route.
- * @param {string[]} [media = []] IDs of media for route.
- * @param {ExternalHref} [hrefs = {}] Other links.
- * @param {Danger} [danger = ''] Danger of the route.
- * @param {GradeSuggestions} [grade = {}] Grade of the route.
- * @param {boolean} [isPrivate = false] Is this route private?
- * @param {boolean} [privateName = false] Is the route's name private?
- * @returns {Promise<Route | null>} Promise of route or null.
+ * @param {string} area Area this route is at.
+ * @param {string} rock Rock this route is on.
+ * @param {boolean} officiallyNamed Is this the official name?
+ * @param {string[]} altNames Other names this route is known as.
+ * @param {string} image Main image.
+ * @param {ClimbingActivities} type Type of climbing activity.
+ * @param {ExternalHref} hrefs External links.
+ * @param {GradeSuggestions} grade Grade of item.
+ * @param {DangerSuggestions} danger How dangerous the route is.
+ * @param {boolean} isPrivate Whether this route contains private data.
+ * @param {boolean} privateName Whether this route contains private data.
+ * @param {boolean} privateLocation Whether this route contains private data.
+ * @returns {Promise<Response<Route>>} The new route if created successfully.
  */
 const createRoute = async (
-  type: ClimbingActivities,
-  crag: string,
+  location: string,
   name: string,
   area = '',
   rock = '',
-  officialName = true,
+  officiallyNamed = true,
   altNames = [] as string[],
   image = '',
-  media = [] as string[],
+  type = CLIMBING_ACTIVITY.BOULDER,
   hrefs = {} as ExternalHref,
-  danger = '',
   grade = {} as GradeSuggestions,
+  danger = {} as DangerSuggestions,
   isPrivate = false,
   privateName = false,
-): Promise<Route | null> => {
-  try {
-    if (!name || !crag) {
-      return null;
-    }
+  privateLocation = false,
+): Promise<Response<Route>> => {
+  let response;
+  let message;
 
-    const response = await request.post(
-      '/routes/create',
-      {
-        type,
-        crag,
-        name,
-        area,
-        rock,
-        officialName,
-        altNames,
-        image,
-        media,
-        hrefs,
-        danger,
-        grade,
-        isPrivate,
-        privateName,
-      },
-    );
-
-    if (response.status === 201) {
-      return response.data.route as Route;
+  if (name) {
+    try {
+      response = await getRequest().post(
+        '/routes/',
+        {
+          location,
+          name,
+          area,
+          rock,
+          officiallyNamed,
+          altNames,
+          image,
+          type,
+          hrefs,
+          grade,
+          danger,
+          isPrivate,
+          privateName,
+          privateLocation,
+        },
+      );
+    } catch (error: unknown) {
+      message = error;
     }
-  } catch (error) {
-    console.log(error);
   }
 
-  return null;
+  if (response && response.status === 201) {
+    return {
+      route: response.data.route as Route,
+      status: 201,
+      error: null,
+    } as Response<Route>;
+  }
+
+  return {
+    route: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
- * Deletes a route.
+ * Delete an existing route.
  *
- * @param {string} id Route ID.
- * @returns {Promise<void>} Promise of the action.
+ * @param {string} id Route unique identifier.
+ * @returns {Promise<Response<number>>} Number of items removed.
  */
-const deleteRoute = async (id: string): Promise<void> => {
-  try {
-    if (!id) {
-      return;
-    }
+const deleteRoute = async (id: string): Promise<Response<number>> => {
+  let response;
+  let message;
 
-    await request.delete(`/routes/delete?id=${id}`);
-  } catch (error) {
-    console.log(error);
+  if (id) {
+    try {
+      response = await getRequest().delete(`/routes/${id}`);
+    } catch (error: unknown) {
+      message = error;
+    }
   }
+
+  if (response && response.status === 204) {
+    return {
+      removed: 1,
+      status: 204,
+      error: null,
+    };
+  }
+
+  return {
+    removed: 0,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
- * Edits a route.
+ * Edits an existing route.
  *
- * @param {string} id ID of the route.
- * @param {undefined | ClimbingActivities} [type = undefined] Type of activity.
- * @param {undefined | string} [crag = undefined] Crag the route is in.
- * @param {undefined | string} [name = undefined] Name of the route.
- * @param {undefined | string} [area = undefined] Area the route is in.
- * @param {undefined | string} [rock = undefined] Rock the route is on.
- * @param {undefined | boolean} [officialName = undefined] Is this the official name?
- * @param {undefined | string[]} [altNames = undefined] Alternative names.
- * @param {undefined | string} [image = undefined] Image of the route.
- * @param {undefined | string[]} [media = undefined] IDs of media for route.
- * @param {undefined | ExternalHref} [hrefs = undefined] Other links.
- * @param {undefined | Danger} [danger = undefined] Danger of the route.
- * @param {undefined | GradeSuggestions} [grade = undefined] Grade of the route.
- * @param {undefined | boolean} [isPrivate = undefined] Is this route private?
- * @param {undefined | boolean} [privateName = undefined] Is the route's name private?
- * @returns {Promise<Route | null>} Promise of route or null.
+ * @param {string} id Route unique identifier.
+ * @param {string | undefined} [location = undefined] Location of the route.
+ * @param {string | undefined} [name = undefined] Name of the route.
+ * @param {string | undefined} [area = undefined] Area this route is at.
+ * @param {string | undefined} [rock = undefined] Rock this route is on.
+ * @param {boolean | undefined} [officiallyNamed = undefined] Is this the official name?
+ * @param {string[] | undefined} [altNames = undefined] Other names this route is known as.
+ * @param {string | undefined} [image = undefined] Main image.
+ * @param {ClimbingActivities | undefined} [type = undefined] Type of climbing activity.
+ * @param {ExternalHref | undefined} [hrefs = undefined] External links.
+ * @param {GradeSuggestions | undefined} [grade = undefined] Grade of item.
+ * @param {DangerSuggestions | undefined} [danger = undefined] How dangerous the route is.
+ * @param {boolean | undefined} [isPrivate = undefined] Whether this route contains private data.
+ * @param {boolean | undefined} [privateName = undefined] Whether this route contains private data.
+ * @param {boolean | undefined} [privateLocation = undefined] Whether this route contains private data.
+ * @returns {Promise<Response<Route>>} The new route if created successfully.
  */
 const editRoute = async (
   id: string,
-  type = undefined as undefined | ClimbingActivities,
-  crag = undefined as undefined | string,
-  name = undefined as undefined | string,
-  area = undefined as undefined | string,
-  rock = undefined as undefined | string,
-  officialName = undefined as undefined | boolean,
-  altNames = undefined as undefined | string[],
-  image = undefined as undefined | string,
-  media = undefined as undefined | string[],
-  hrefs = undefined as undefined | ExternalHref,
-  danger = undefined as undefined | string,
-  grade = undefined as undefined | GradeSuggestions,
-  isPrivate = undefined as undefined | boolean,
-  privateName = undefined as undefined | boolean,
-): Promise<Route | null> => {
-  try {
-    if (!id) {
-      return null;
-    }
+  location = undefined as string | undefined,
+  name = undefined as string | undefined,
+  area = undefined as string | undefined,
+  rock = undefined as string | undefined,
+  officiallyNamed = undefined as boolean | undefined,
+  altNames = undefined as string[] | undefined,
+  image = undefined as string | undefined,
+  type = undefined as ClimbingActivities | undefined,
+  hrefs = undefined as ExternalHref | undefined,
+  grade = undefined as GradeSuggestions | undefined,
+  danger = undefined as DangerSuggestions | undefined,
+  isPrivate = undefined as boolean | undefined,
+  privateName = undefined as boolean | undefined,
+  privateLocation = undefined as boolean | undefined,
+): Promise<Response<Route>> => {
+  let response;
+  let message;
 
-    const response = await request.put(
-      '/routes/edit',
-      {
-        id,
-        type,
-        crag,
-        name,
-        area,
-        rock,
-        officialName,
-        altNames,
-        image,
-        media,
-        hrefs,
-        danger,
-        grade,
-        isPrivate,
-        privateName,
-      },
-    );
-
-    if (response.status === 200) {
-      return response.data.route as Route;
+  if (id) {
+    try {
+      response = await getRequest().put(
+        `/routes/${id}`,
+        optionalRequestBody({
+          location,
+          name,
+          area,
+          rock,
+          officiallyNamed,
+          altNames,
+          image,
+          type,
+          hrefs,
+          grade,
+          danger,
+          isPrivate,
+          privateName,
+          privateLocation,
+        }),
+      );
+    } catch (error: unknown) {
+      message = error;
     }
-  } catch (error) {
-    console.log(error);
   }
 
-  return null;
+  if (response && response.status === 200) {
+    return {
+      route: response.data.route as Route,
+      status: 200,
+      error: null,
+    } as Response<Route>;
+  }
+
+  return {
+    route: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
- * Retrieves a rock.
+ * Retrieves a route.
  *
- * @param {string} id Rock ID.
- * @returns {Promise<Dictionary<Crag | Area | Rock | Route[]> | null>}  Crag Details.
+ * @param {string} id Unique identifier for an route.
+ * @returns {Promise<Response<Route>>} Route details
  */
-const getRoute = async (id: string): Promise<Dictionary<Crag | Area | Rock | Route[]> | null> => {
+const getRoute = async (id: string): Promise<Response<Route>> => {
+  let response;
+  let message;
+
   try {
-    if (!id) {
-      return null;
-    }
-
-    const response = await request.get(`/routes/get?id=${id}`);
-
-    if (response.status === 200) {
-      return response.data as Dictionary<Crag | Area | Rock | Route[]>;
-    }
-  } catch (error) {
-    console.log(error);
+    response = await getRequest().get(`/routes/${id}`);
+  } catch (error: unknown) {
+    message = error;
   }
 
-  return null;
+  if (response && response.status === 200) {
+    return {
+      route: response.data.route as Route,
+      status: 200,
+      error: `${message}`,
+    };
+  }
+
+  return {
+    route: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
+};
+
+/**
+ * Retrieve a set of rocks.
+ *
+ * @param {string[] | undefined} [ids = undefined] Set list of unique identifiers to fetch.
+ * @param {string | undefined} [search = undefined] Query for name.
+ * @param {number | undefined} [offset = undefined] Search cursor offset.
+ * @param {number | undefined} [limit = undefined] Number of items to fetch (max 25).
+ * @param {number | undefined} [location = undefined] Location of routes.
+ * @param {number | undefined} [area = undefined] Area of routes.
+ * @param {number | undefined} [rock = undefined] Rock of routes.
+ * @param {ClimbingActivities | undefined} [type = undefined] Type of route.
+ * @param {ClimbingGrade | undefined} [grade = undefined] Grade of the route.
+ * @param {RouteDanger | undefined} [danger = undefined] Danger of the route.
+ * @param {string | undefined} [user = undefined] Users who have interacted with the rock.
+ * @param {boolean | undefined} [isPrivate = undefined] Whether the location is private.
+ * @returns {Promise<Response<Rock[]>>} A set of routes.
+ */
+const getRoutes = async (
+  ids = undefined as string[] | undefined,
+  search = undefined as string | undefined,
+  offset = undefined as number | undefined,
+  limit = undefined as number | undefined,
+  location = undefined as string | undefined,
+  area = undefined as string | undefined,
+  rock = undefined as string | undefined,
+  type = undefined as ClimbingActivities | undefined,
+  grade = undefined as ClimbingGrade | undefined,
+  danger = undefined as RouteDanger | undefined,
+  user = undefined as string | undefined,
+  isPrivate = undefined as boolean | undefined,
+): Promise<Response<Route[]>> => {
+  let response;
+  let message;
+
+  try {
+    response = await getRequest().get(`/routes/?${optionalQueryParams({
+      ids,
+      search,
+      offset,
+      limit,
+      location,
+      area,
+      rock,
+      type,
+      grade,
+      danger,
+      user,
+      isPrivate,
+    })}`);
+  } catch (error: unknown) {
+    message = error;
+  }
+
+  if (response && response.status === 200) {
+    return {
+      routes: response.data.routes,
+      count: response.data.count,
+      status: response.status,
+      error: null,
+    } as Response<Route[]>;
+  }
+
+  return {
+    routes: null,
+    count: 0,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  } as Response<Route[]>;
 };
 
 export default {
@@ -205,4 +317,5 @@ export default {
   deleteRoute,
   editRoute,
   getRoute,
+  getRoutes,
 };

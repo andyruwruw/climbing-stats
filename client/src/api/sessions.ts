@@ -1,212 +1,336 @@
 // Local Imports
-import request from './request';
+import {
+  optionalQueryParams,
+  optionalRequestBody,
+  getRequest,
+} from './request';
 
 // Types
 import {
-  Area,
   ClimbingActivities,
+  Response,
   ClimbingGrade,
-  Crag,
-  Dictionary,
   Session,
 } from '../types';
 
 /**
- * Creates a new session.
+ * Create a new session.
  *
- * @param {string} crag Location of session.
- * @param {number} date Date of the session.
- * @param {string[]} [areas = []] Areas visited during the session.
- * @param {number} [start = -1] Start of the session.
- * @param {number} [end = -1] End of the session.
- * @param {number} [duration = -1] Duration of the session.
- * @param {ClimbingActivities[]} [activities = []] Type of activitys.
- * @param {boolean} [outdoors = false] Whether the session is outdoors.
- * @param {number} [felt = -1] How the climber felt.
+ * @param {string} location Where this session was.
+ * @param {number} start Starting time of the session.
+ * @param {number} end End of the session.
+ * @param {string[]} [areas = []] Areas time was spent.
+ * @param {ClimbingActivities[]} [activities = []] What activites were done.
  * @param {string} [description = ''] Description of the session.
- * @param {string[]} [partners = []] Partners during the session.
- * @param {string[]} [media = []] Media from the session.
- * @param {string[]} [max = []] Grades of sends from the session.
- * @returns {Promise<Session | null>} Promise of session or null.
+ * @param {number} [felt = -1] How the climber felt.
+ * @param {string[]} [partners = []] Partners climbed with.
+ * @param {number} [activeCal = -1] Active calories.
+ * @param {number} [totalCal = -1] Total calories burned.
+ * @param {number} [heart = -1] Average heartrate.
+ * @param {number} [lowHeart = -1] Lowest heart rate reached.
+ * @param {number} [highHeart = -1] Highest heart rate reached.
+ * @param {string[]} [carpool = []] Who was carpooled with.
+ * @param {number} [drive = 0] Length of drive.
+ * @param {string[]} [media = []] Associated media.
+ * @param {ClimbingGrade[]} [sent = []] Max item sent.
+ * @returns {Promise<Response<Session>>} The new session if created successfully.
  */
 const createSession = async (
-  crag: string,
-  date: number,
-  areas = [],
-  start = -1,
-  end = -1,
-  duration = -1,
-  activities = [],
-  outdoors = false,
-  felt = -1,
+  location: string,
+  start: number,
+  end: number,
+  areas = [] as string[],
+  activities = [] as ClimbingActivities[],
   description = '',
-  partners = [],
-  media = [],
-  max = [],
-): Promise<Session | null> => {
-  try {
-    if (!crag || !date) {
-      return null;
-    }
+  felt = -1,
+  partners = [] as string[],
+  activeCal = -1,
+  totalCal = -1,
+  heart = -1,
+  lowHeart = -1,
+  highHeart = -1,
+  carpool = [] as string[],
+  drive = 0,
+  sent = [] as ClimbingGrade[],
+): Promise<Response<Session>> => {
+  let response;
+  let message;
 
-    const response = await request.post(
-      '/session/create',
-      {
-        crag,
-        date,
-        areas,
-        start,
-        end,
-        duration,
-        activities,
-        outdoors,
-        felt,
-        description,
-        partners,
-        media,
-        max,
-      },
-    );
-
-    if (response.status === 201) {
-      return response.data.session as Session;
+  if (location
+    && start
+    && end) {
+    try {
+      response = await getRequest().post(
+        '/sessions/',
+        {
+          location,
+          start,
+          end,
+          areas,
+          activities,
+          description,
+          felt,
+          partners,
+          activeCal,
+          totalCal,
+          heart,
+          lowHeart,
+          highHeart,
+          carpool,
+          drive,
+          sent,
+        },
+      );
+    } catch (error: unknown) {
+      message = error;
     }
-  } catch (error) {
-    console.log(error);
   }
 
-  return null;
+  if (response && response.status === 201) {
+    return {
+      session: response.data.session as Session,
+      status: 201,
+      error: null,
+    } as Response<Session>;
+  }
+
+  return {
+    session: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
- * Deletes a session.
+ * Delete an existing session.
  *
- * @param {string} id Session ID.
- * @returns {Promise<void>} Promise of the action.
+ * @param {string} id Session unique identifier.
+ * @returns {Promise<Response<number>>} Number of items removed.
  */
-const deleteSession = async (id: string): Promise<void> => {
-  try {
-    if (!id) {
-      return;
-    }
+const deleteSession = async (id: string): Promise<Response<number>> => {
+  let response;
+  let message;
 
-    await request.delete(`/sessions/delete?id=${id}`);
-  } catch (error) {
-    console.log(error);
+  if (id) {
+    try {
+      response = await getRequest().delete(`/sessions/${id}`);
+    } catch (error: unknown) {
+      message = error;
+    }
   }
+
+  if (response && response.status === 204) {
+    return {
+      removed: 1,
+      status: 204,
+      error: null,
+    };
+  }
+
+  return {
+    removed: 0,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
- * Edits a session.
+ * Edits an existing session.
  *
- * @param {string} id ID of the session.
- * @param {undefined | string} [crag = undefined] Location of session.
- * @param {undefined | number} [date = undefined] Date of the session.
- * @param {undefined | string[]} [areas = undefined] Areas visited during the session.
- * @param {undefined | number} [start = undefined] Start of the session.
- * @param {undefined | number} [end = undefined] End of the session.
- * @param {undefined | number} [duration = undefined] Duration of the session.
- * @param {undefined | ClimbingActivities[]} [activities = undefined] Type of activitys.
- * @param {undefined | boolean} [outdoors = undefined] Whether the session is outdoors.
- * @param {undefined | number} [felt = undefined] How the climber felt.
- * @param {undefined | string} [description = undefined] Description of the session.
- * @param {undefined | string[]} [partners = undefined] Partners during the session.
- * @param {undefined | string[]} [media = undefined] Media from the session.
- * @param {undefined | string[]} [max = undefined] Grades of sends from the session.
- * @returns {Promise<Session | null>} Promise of session or null.
+ * @param {string} id Session unique identifier.
+ * @param {string | undefined} [location] = undefined Where this session was.
+ * @param {number | undefined} [start = undefined] Starting time of the session.
+ * @param {number | undefined} [end = undefined] End of the session.
+ * @param {string[] | undefined} [areas = undefined] Areas time was spent.
+ * @param {ClimbingActivities[] | undefined} [activities = undefined] What activites were done.
+ * @param {string | undefined} [description = undefined] Description of the session.
+ * @param {number | undefined} [felt = undefined] How the climber felt.
+ * @param {string[] | undefined} [partners = undefined] Partners climbed with.
+ * @param {number | undefined} [activeCal = undefined] Active calories.
+ * @param {number | undefined} [totalCal = undefined] Total calories burned.
+ * @param {number | undefined} [heart = undefined] Average heartrate.
+ * @param {number | undefined} [lowHeart = undefined] Lowest heart rate reached.
+ * @param {number | undefined} [highHeart = undefined] Highest heart rate reached.
+ * @param {string[] | undefined} [carpool = undefined] Who was carpooled with.
+ * @param {number | undefined} [drive = undefined] Length of drive.
+ * @param {string[] | undefined} [media = undefined] Associated media.
+ * @param {ClimbingGrade[]} [sent = undefined] Max item sent.
+ * @param {string | undefined} [location = undefined] Location of the route.
+ * @returns {Promise<Response<Session>>} The new session if created successfully.
  */
 const editSession = async (
   id: string,
-  crag = undefined as undefined | string,
-  date = undefined as undefined | number,
-  areas = undefined as undefined | string[],
-  start = undefined as undefined | number,
-  end = undefined as undefined | number,
-  duration = undefined as undefined | number,
-  activities = undefined as undefined | ClimbingActivities[],
-  outdoors = undefined as undefined | boolean,
-  felt = undefined as undefined | number,
-  description = undefined as undefined | string,
-  partners = undefined as undefined | string[],
-  media = undefined as undefined | string[],
-  max = undefined as undefined | ClimbingGrade[],
-): Promise<Session | null> => {
-  try {
-    if (!id) {
-      return null;
-    }
+  location = undefined as string | undefined,
+  start = undefined as number | undefined,
+  end = undefined as number | undefined,
+  areas = undefined as string[] | undefined,
+  activities = undefined as ClimbingActivities[] | undefined,
+  description = undefined as string | undefined,
+  felt = undefined as number | undefined,
+  partners = undefined as string[] | undefined,
+  activeCal = undefined as number | undefined,
+  totalCal = undefined as number | undefined,
+  heart = undefined as number | undefined,
+  lowHeart = undefined as number | undefined,
+  highHeart = undefined as number | undefined,
+  carpool = undefined as string[] | undefined,
+  drive = undefined as number | undefined,
+  sent = undefined as ClimbingGrade[] | undefined,
+): Promise<Response<Session>> => {
+  let response;
+  let message;
 
-    const response = await request.put(
-      '/sessions/edit',
-      {
-        id,
-        crag,
-        date,
-        areas,
-        start,
-        end,
-        duration,
-        activities,
-        outdoors,
-        felt,
-        description,
-        partners,
-        media,
-        max,
-      },
-    );
-
-    if (response.status === 200) {
-      return response.data.session as Session;
+  if (id) {
+    try {
+      response = await getRequest().put(
+        `/sessions/${id}`,
+        optionalRequestBody({
+          location,
+          start,
+          end,
+          areas,
+          activities,
+          description,
+          felt,
+          partners,
+          activeCal,
+          totalCal,
+          heart,
+          lowHeart,
+          highHeart,
+          carpool,
+          drive,
+          sent,
+        }),
+      );
+    } catch (error: unknown) {
+      message = error;
     }
-  } catch (error) {
-    console.log(error);
   }
 
-  return null;
+  if (response && response.status === 200) {
+    return {
+      session: response.data.session as Session,
+      status: 200,
+      error: null,
+    } as Response<Session>;
+  }
+
+  return {
+    session: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
  * Retrieves a session.
  *
- * @param {string} id Session ID.
- * @returns {Promise<Dictionary<Crag | Area[] | Session> | null>}  Session Details.
+ * @param {string} id Unique identifier for an session.
+ * @returns {Promise<Response<Session>>} Session details
  */
-const getSession = async (id: string): Promise<Dictionary<Crag | Area[] | Session> | null> => {
+const getSession = async (id: string): Promise<Response<Session>> => {
+  let response;
+  let message;
+
   try {
-    if (!id) {
-      return null;
-    }
-
-    const response = await request.get(`/sessions/get?id=${id}`);
-
-    if (response.status === 200) {
-      return response.data as Dictionary<Crag | Area[] | Session>;
-    }
-  } catch (error) {
-    console.log(error);
+    response = await getRequest().get(`/sessions/${id}`);
+  } catch (error: unknown) {
+    message = error;
   }
 
-  return null;
+  if (response && response.status === 200) {
+    return {
+      session: response.data.session as Session,
+      status: 200,
+      error: `${message}`,
+    };
+  }
+
+  return {
+    session: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
- * Retrieves a user's sessions.
+ * Retrieve a set of sessions.
  *
- * @param {string} username User's username.
- * @returns {Promise<Session[] | null>} The user's sessions.
+ * @param {string[] | undefined} [ids = undefined] Set list of unique identifiers to fetch.
+ * @param {string | undefined} [search = undefined] Query for name.
+ * @param {number | undefined} [offset = undefined] Search cursor offset.
+ * @param {number | undefined} [limit = undefined] Number of items to fetch (max 25).
+ * @param {string | undefined} [location = undefined] Location of sessions.
+ * @param {string | undefined} [area = undefined] Area of sessions.
+ * @param {boolean | undefined} [outdoors = undefined] Whether the session was outdoors.
+ * @param {number | undefined} [before = undefined] A date to fetch before.
+ * @param {number | undefined} [after = undefined] A date to fetch after.
+ * @param {number | undefined} [minDuration = undefined] Minimum duration of session.
+ * @param {number | undefined} [maxDuration = undefined] Maximum duration of session.
+ * @param {ClimbingActivities| undefined} [activity = undefined] Activities of session.
+ * @param {string | undefined} [partner = undefined] Partner in the session.
+ * @param {string | undefined} [carpool = undefined] Carpool partner in the session.
+ * @param {string | undefined} [user = undefined] User the session belongs to.
+ * @returns {Promise<Response<Session[]>>} A set of sessions.
  */
-const getSessions = async (username: string): Promise<Session[] | null> => {
-  try {
-    const response = await request.get(`/sessions/gets${username ? `?username=${username}` : ''}`);
+const getSessions = async (
+  ids = undefined as string[] | undefined,
+  search = undefined as string | undefined,
+  offset = undefined as number | undefined,
+  limit = undefined as number | undefined,
+  location = undefined as string | undefined,
+  area = undefined as string | undefined,
+  outdoors = undefined as boolean | undefined,
+  before = undefined as boolean | undefined,
+  after = undefined as boolean | undefined,
+  minDuration = undefined as number | undefined,
+  maxDuration = undefined as number | undefined,
+  activity = undefined as ClimbingActivities | undefined,
+  partner = undefined as string | undefined,
+  carpool = undefined as string | undefined,
+  user = undefined as string | undefined,
+): Promise<Response<Session[]>> => {
+  let response;
+  let message;
 
-    if (response.status === 200) {
-      return response.data.sessions as Session[] | null;
-    }
-  } catch (error) {
-    console.log(error);
+  try {
+    response = await getRequest().get(`/sessions/?${optionalQueryParams({
+      ids,
+      search,
+      offset,
+      limit,
+      location,
+      area,
+      outdoors,
+      before,
+      after,
+      minDuration,
+      maxDuration,
+      activity,
+      partner,
+      carpool,
+      user,
+    })}`);
+  } catch (error: unknown) {
+    message = error;
   }
-  return null;
+
+  if (response && response.status === 200) {
+    return {
+      sessions: response.data.sessions,
+      count: response.data.count,
+      status: response.status,
+      error: null,
+    } as Response<Session[]>;
+  }
+
+  return {
+    sessions: null,
+    count: 0,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  } as Response<Session[]>;
 };
 
 export default {

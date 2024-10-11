@@ -22,9 +22,9 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/profile-page/index.vue'),
   },
   {
-    path: '/crag/:id',
-    name: 'crag',
-    component: () => import('../views/crag-page/index.vue'),
+    path: '/location/:id',
+    name: 'location',
+    component: () => import('../views/location-page/index.vue'),
   },
   {
     path: '/session/:id',

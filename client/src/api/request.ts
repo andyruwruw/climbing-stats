@@ -1,42 +1,95 @@
 /* eslint-disable max-len */
 // Packages
-import axios from 'axios';
+import axios, {
+  AxiosHeaders,
+  AxiosInstance,
+} from 'axios';
+
+// Local Imports
+import { BACKEND_ORIGIN } from '../config';
+import { getToken } from '../helpers/token';
 
 // Types
 import { Dictionary } from '../types';
 
-const ApiBaseUrl = (): string => {
-  if (process.env.VUE_APP_ENVIRONMENT !== 'development') {
-    return 'http://localhost:3000/api';
+/**
+ * Instantiates the axios instance.
+ */
+export const getRequest = (): AxiosInstance => {
+  const headers = {} as AxiosHeaders;
+  const token = getToken();
+
+  if (token) {
+    headers.Authorization = `Bearer ${getToken()}`;
   }
-  return 'http://localhost:3000/api';
+
+  return axios.create({
+    baseURL: `${BACKEND_ORIGIN}`,
+    headers,
+  });
 };
 
 /**
- * Axios instance set up for the API.
+ * Turns a body into query parameters.
+ *
+ * @link https://www.branch.io/glossary/query-parameters/#:~:text=What%20are%20query%20parameters%3F,on%20the%20data%20being%20passed.
+ * @param {Dictionary<any>} body Request body.
+ * @returns {string} Request query parameters.
  */
-const request = axios.create({
-  baseURL: ApiBaseUrl(),
-  withCredentials: false,
-});
+export const stringifyBody = (body: Record<string, unknown>): string => {
+  const parameters = new URLSearchParams();
+  const keys = Object.keys(body);
+
+  for (let i = 0; i < keys.length; i += 1) {
+    parameters.append(keys[i], `${body[keys[i]]}`);
+  }
+
+  return `?${parameters.toString()}`;
+};
 
 /**
- * Generates request body devoid of undefined.
+ * Only adds non-undefined parameters to query.
  *
- * @param {Dictionary<any>} body Any request body.
- * @returns {Dictionary<any>} Request body without undefined.
+ * @param {Dictionary<any>} parameters Parameters to check.
+ * @returns {string} Query parameters.
  */
-export const generateBody = (body: Dictionary<any>): Dictionary<any> => (Object.entries(body).reduce((
-  acc,
-  [
-    key,
-    value,
-  ],
-) => {
-  if (value !== undefined) {
-    acc[key] = value;
-  }
-  return acc;
-}, {} as Dictionary<any>));
+export const optionalQueryParams = (parameters: Dictionary<any>): string => {
+  const query = new URLSearchParams();
 
-export default request;
+  const keys = Object.keys(parameters);
+
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i];
+
+    if (parameters[key] !== undefined) {
+      query.append(
+        key,
+        `${parameters[key]}`,
+      );
+    }
+  }
+
+  return query.toString();
+};
+
+/**
+ * Only adds non-undefined parameters to body.
+ *
+ * @param {Dictionary<any>} parameters Parameters to check.
+ * @returns {Dictionary<any>} Request body.
+ */
+export const optionalRequestBody = (parameters: Dictionary<any>): Dictionary<any> => {
+  const body = {} as Dictionary<any>;
+
+  const keys = Object.keys(parameters);
+
+  for (let i = 0; i < keys.length; i += 1) {
+    const key = keys[i];
+
+    if (parameters[key] !== undefined) {
+      body[key] = parameters[key];
+    }
+  }
+
+  return body;
+};

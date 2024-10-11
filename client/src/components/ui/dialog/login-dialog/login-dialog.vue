@@ -6,15 +6,6 @@
     <div :class="$style.content">
       <v-text-field
         v-if="type === 'register'"
-        v-model="email"
-        dark
-        outlined
-        hide-details
-        dense
-        placeholder="Email Address (Not Required)" />
-
-      <v-text-field
-        v-if="type === 'register'"
         v-model="fullName"
         dark
         outlined
@@ -123,11 +114,6 @@ export default Vue.extend({
      * User full name.
      */
     fullName: 'Andrew Young' as string,
-
-    /**
-     * User email.
-     */
-    email: 'andrew@youngshome.com' as string,
   }),
 
   computed: {
@@ -198,10 +184,9 @@ export default Vue.extend({
         });
       } else {
         this.register({
-          fullName: this.fullName,
+          displayName: this.fullName,
           username: this.username,
           password: this.password,
-          email: this.email,
         });
       }
     },

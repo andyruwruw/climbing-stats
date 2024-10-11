@@ -10,31 +10,28 @@
         mdi-carabiner
       </v-icon>
 
-      <span :class="$style.title">
+      <span
+        v-if="isHuge || isLarge || isMedium"
+        :class="$style.title">
         Climbing Stats
       </span>
     </div>
 
     <v-spacer />
 
-    <v-btn
+    <c-button
       v-if="!getUser"
-      text
+      :outlined="true"
       @click="openLoginDialog">
       Login
-    </v-btn>
+    </c-button>
 
-    <v-btn
+    <c-button
       v-if="getUser"
-      text>
+      :outlined="true"
+      @click="openLoginDialog">
       Log Tick
-    </v-btn>
-
-    <v-btn
-      v-if="getUser"
-      text>
-      Log Session
-    </v-btn>
+    </c-button>
   </v-app-bar>
 </template>
 
@@ -46,10 +43,23 @@ import {
 } from 'vuex';
 import Vue from 'vue';
 
+// Local Imports
+import CButton from '../../form/button/button.vue';
+
 export default Vue.extend({
   name: 'app-bar',
 
+  components: {
+    CButton,
+  },
+
   computed: {
+    ...mapGetters('resize', [
+      'isLarge',
+      'isHuge',
+      'isMedium',
+    ]),
+
     ...mapGetters('user', [
       'getUser',
     ]),

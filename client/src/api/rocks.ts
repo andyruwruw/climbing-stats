@@ -1,189 +1,304 @@
 // Local Imports
-import request from './request';
+import {
+  optionalQueryParams,
+  optionalRequestBody,
+  getRequest,
+} from './request';
+import { ROCK_TYPES } from '../config';
 
 // Types
 import {
-  Area,
   ClimbingActivities,
-  Crag,
-  Dictionary,
   ExternalHref,
   Rock,
+  Response,
   RockType,
-  Route,
 } from '../types';
 
 /**
- * Creates a new rock.
+ * Create a new rock.
  *
- * @param {string} crag Crag the rock is in.
+ * @param {string} location Location of the rock.
  * @param {string} name Name of the rock.
- * @param {boolean} [officialName = true] Is this the official name?
- * @param {string[]} [altNames = []] Alternative names.
- * @param {string} [image = ''] Image of the rock.
- * @param {ExternalHref} [hrefs = {}] Other links.
- * @param {string} [area = ''] ID of area this rock is in.
- * @param {RockType} [type = 'boulder'] Type of rock.
- * @param {ClimbingActivities[]} [activities = []] Activities on this rock.
- * @param {boolean} [isPrivate = false] Is this rock private?
- * @param {boolean} [privateName = false] Is the rock's name private?
- * @param {string[]} [media = []] IDs of media for rock.
- * @returns {Promise<Rock | null>} Promise of rock or null.
+ * @param {boolean} officiallyNamed Is this the official name?
+ * @param {string[]} altNames Other names this rock is known as.
+ * @param {boolean} outdoors Whether this rock is outdoors.
+ * @param {string} image Main image.
+ * @param {string} country Country this rock is in.
+ * @param {string} state State this rock is in.
+ * @param {string} locale Locale of this rock.
+ * @param {string} color Color of the rock.
+ * @param {ExternalHref} hrefs External links.
+ * @param {ClimbingActivities[]} activities What activites are available.
+ * @param {boolean} isPrivate Whether this rock contains private data.
+ * @param {boolean} privateName Whether this rock contains private data.
+ * @param {boolean} privateLocation Whether this rock contains private data.
+ * @returns {Promise<Response<Rock>>} The new rock if created successfully.
  */
 const createRock = async (
-  crag: string,
+  location: string,
   name: string,
-  officialName = true,
-  altNames = [],
-  image = '',
-  hrefs = {},
   area = '',
-  type = 'boulder' as RockType,
-  activities = [],
+  officiallyNamed = true,
+  altNames = [] as string[],
+  type = ROCK_TYPES.BOULDER,
+  activities = [] as ClimbingActivities[],
+  image = '',
+  hrefs = {} as ExternalHref,
+  outdoors = true,
   isPrivate = false,
   privateName = false,
-  media = [],
-): Promise<Crag | null> => {
-  try {
-    if (!name || !crag) {
-      return null;
-    }
+  privateLocation = false,
+): Promise<Response<Rock>> => {
+  let response;
+  let message;
 
-    const response = await request.post(
-      '/rocks/create',
-      {
-        crag,
-        name,
-        officialName,
-        altNames,
-        image,
-        hrefs,
-        area,
-        type,
-        activities,
-        isPrivate,
-        privateName,
-        media,
-      },
-    );
-
-    if (response.status === 201) {
-      return response.data.crag as Crag;
+  if (name) {
+    try {
+      response = await getRequest().post(
+        '/rocks/',
+        {
+          location,
+          name,
+          area,
+          officiallyNamed,
+          altNames,
+          type,
+          activities,
+          image,
+          hrefs,
+          outdoors,
+          isPrivate,
+          privateName,
+          privateLocation,
+        },
+      );
+    } catch (error: unknown) {
+      message = error;
     }
-  } catch (error) {
-    console.log(error);
   }
 
-  return null;
+  if (response && response.status === 201) {
+    return {
+      rock: response.data.rock as Rock,
+      status: 201,
+      error: null,
+    } as Response<Rock>;
+  }
+
+  return {
+    rock: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
- * Deletes a rock.
+ * Delete an existing rock.
  *
- * @param {string} id Rock ID.
- * @returns {Promise<void>} Promise of the action.
+ * @param {string} id Rock unique identifier.
+ * @returns {Promise<Response<number>>} Number of items removed.
  */
-const deleteRock = async (id: string): Promise<void> => {
-  try {
-    if (!id) {
-      return;
-    }
+const deleteRock = async (id: string): Promise<Response<number>> => {
+  let response;
+  let message;
 
-    await request.delete(`/rocks/delete?id=${id}`);
-  } catch (error) {
-    console.log(error);
+  if (id) {
+    try {
+      response = await getRequest().delete(`/rocks/${id}`);
+    } catch (error: unknown) {
+      message = error;
+    }
   }
+
+  if (response && response.status === 204) {
+    return {
+      removed: 1,
+      status: 204,
+      error: null,
+    };
+  }
+
+  return {
+    removed: 0,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
- * Edits a rock.
+ * Edits an existing rock.
  *
- * @param {string} id ID of the rock.
- * @param {undefined | string} [crag = undefined] Crag the rock is in.
- * @param {undefined | string} [name = undefined] Name of the rock.
- * @param {undefined | boolean} [officialName = undefined] Is this the official name?
- * @param {undefined | string[]} [altNames = undefined] Alternative names.
- * @param {undefined | string} [image = undefined] Image of the rock.
- * @param {undefined | ExternalHref} [hrefs = undefined] Other links.
- * @param {undefined | string} [area = undefined] ID of area this rock is in.
- * @param {undefined | RockType} [type = undefined] Type of rock.
- * @param {undefined | ClimbingActivities[]} [activities = undefined] Activities on this rock.
- * @param {undefined | boolean} [isPrivate = undefined] Is this rock private?
- * @param {undefined | boolean} [privateName = undefined] Is the rock's name private?
- * @param {undefined | string[]} [media = undefined] IDs of media for rock.
- * @returns {Promise<Rock | null>} Promise of rock or null.
+ * @param {string} id Rock unique identifier.
+ * @param {string | undefined} [location = undefined] Location of the rock.
+ * @param {string | undefined} [name = undefined] Name of the rock.
+ * @param {boolean | undefined} [officiallyNamed = undefined] Is this the official name?
+ * @param {string[] | undefined} [altNames = undefined] Other names this rock is known as.
+ * @param {boolean | undefined} [outdoors = undefined] Whether this rock is outdoors.
+ * @param {string | undefined} [image = undefined] Main image.
+ * @param {string | undefined} [country = undefined] Country this rock is in.
+ * @param {string | undefined} [state = undefined] State this rock is in.
+ * @param {string | undefined} [locale = undefined] Locale of this rock.
+ * @param {string | undefined} [color = undefined] Color of the rock.
+ * @param {ExternalHref | undefined} [hrefs = undefined] External links.
+ * @param {ClimbingActivities[] | undefined} [activities = undefined] What activites are available.
+ * @param {boolean | undefined} [isPrivate = undefined] Whether this rock contains private data.
+ * @param {boolean | undefined} [privateName = undefined] Whether this rock contains private data.
+ * @param {boolean | undefined} [privateLocation = undefined] Whether this rock contains private data.
+ * @returns {Promise<Response<Rock>>} The new rock if created successfully.
  */
 const editRock = async (
   id: string,
-  crag = undefined as undefined | string,
-  name = undefined as undefined | string,
-  officialName = undefined as undefined | boolean,
-  altNames = undefined as undefined | string[],
-  image = undefined as undefined | string,
-  hrefs = undefined as undefined | ExternalHref,
-  area = undefined as undefined | string,
-  type = undefined as undefined | RockType,
-  activities = undefined as undefined | ClimbingActivities,
-  isPrivate = undefined as undefined | boolean,
-  privateName = undefined as undefined | boolean,
-  media = undefined as undefined | string[],
-): Promise<Rock | null> => {
-  try {
-    if (!id) {
-      return null;
-    }
+  location = undefined as string | undefined,
+  name = undefined as string | undefined,
+  area = undefined as string | undefined,
+  officiallyNamed = undefined as boolean | undefined,
+  altNames = undefined as string[] | undefined,
+  type = undefined as RockType | undefined,
+  activities = undefined as ClimbingActivities[] | undefined,
+  image = undefined as string | undefined,
+  hrefs = undefined as ExternalHref | undefined,
+  outdoors = undefined as boolean | undefined,
+  isPrivate = undefined as boolean | undefined,
+  privateName = undefined as boolean | undefined,
+  privateLocation = undefined as boolean | undefined,
+): Promise<Response<Rock>> => {
+  let response;
+  let message;
 
-    const response = await request.put(
-      '/rocks/edit',
-      {
-        id,
-        crag,
-        name,
-        officialName,
-        altNames,
-        image,
-        hrefs,
-        area,
-        type,
-        activities,
-        isPrivate,
-        privateName,
-        media,
-      },
-    );
-
-    if (response.status === 200) {
-      return response.data.rock as Rock;
+  if (id) {
+    try {
+      response = await getRequest().put(
+        `/rocks/${id}`,
+        optionalRequestBody({
+          location,
+          name,
+          area,
+          officiallyNamed,
+          altNames,
+          type,
+          activities,
+          image,
+          hrefs,
+          outdoors,
+          isPrivate,
+          privateName,
+          privateLocation,
+        }),
+      );
+    } catch (error: unknown) {
+      message = error;
     }
-  } catch (error) {
-    console.log(error);
   }
 
-  return null;
+  if (response && response.status === 200) {
+    return {
+      rock: response.data.rock as Rock,
+      status: 200,
+      error: null,
+    } as Response<Rock>;
+  }
+
+  return {
+    rock: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
 };
 
 /**
  * Retrieves a rock.
  *
- * @param {string} id Rock ID.
- * @returns {Promise<Dictionary<Crag | Area | Rock | Route[]> | null>}  Crag Details.
+ * @param {string} id Unique identifier for an rock.
+ * @returns {Promise<Response<Rock>>} Rock details
  */
-const getRock = async (id: string): Promise<Dictionary<Crag | Area | Rock | Route[]> | null> => {
+const getRock = async (id: string): Promise<Response<Rock>> => {
+  let response;
+  let message;
+
   try {
-    if (!id) {
-      return null;
-    }
-
-    const response = await request.get(`/rocks/get?id=${id}`);
-
-    if (response.status === 200) {
-      return response.data as Dictionary<Crag | Area | Rock | Route[]>;
-    }
-  } catch (error) {
-    console.log(error);
+    response = await getRequest().get(`/rocks/${id}`);
+  } catch (error: unknown) {
+    message = error;
   }
 
-  return null;
+  if (response && response.status === 200) {
+    return {
+      rock: response.data.rock as Rock,
+      status: 200,
+      error: `${message}`,
+    };
+  }
+
+  return {
+    rock: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
+};
+
+/**
+ * Retrieve a set of rocks.
+ *
+ * @param {string[] | undefined} [ids = undefined] Set list of unique identifiers to fetch.
+ * @param {string | undefined} [search = undefined] Query for name.
+ * @param {number | undefined} [offset = undefined] Search cursor offset.
+ * @param {number | undefined} [limit = undefined] Number of items to fetch (max 25).
+ * @param {number | undefined} [location = undefined] Location of rocks.
+ * @param {number | undefined} [area = undefined] Area of rocks.
+ * @param {RockType | undefined} [type = undefined] Type of rock.
+ * @param  {string | undefined} [user = undefined] Users who have interacted with the rock.
+ * @param  {ClimbingActivities | undefined} [activity = undefined] Included activities in the rock.
+ * @param  {boolean | undefined} [isPrivate = undefined] Whether the location is private.
+ * @returns {Promise<Response<Rock[]>>} A set of rocks.
+ */
+const getRocks = async (
+  ids = undefined as string[] | undefined,
+  search = undefined as string | undefined,
+  offset = undefined as number | undefined,
+  limit = undefined as number | undefined,
+  location = undefined as string | undefined,
+  area = undefined as string | undefined,
+  type = undefined as RockType | undefined,
+  user = undefined as string | undefined,
+  activity = undefined as ClimbingActivities | undefined,
+  isPrivate = undefined as boolean | undefined,
+): Promise<Response<Rock[]>> => {
+  let response;
+  let message;
+
+  try {
+    response = await getRequest().get(`/rocks/?${optionalQueryParams({
+      ids,
+      search,
+      offset,
+      limit,
+      location,
+      area,
+      type,
+      user,
+      activity,
+      isPrivate,
+    })}`);
+  } catch (error: unknown) {
+    message = error;
+  }
+
+  if (response && response.status === 200) {
+    return {
+      rocks: response.data.rocks,
+      count: response.data.count,
+      status: response.status,
+      error: null,
+    } as Response<Rock[]>;
+  }
+
+  return {
+    rocks: null,
+    count: 0,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  } as Response<Rock[]>;
 };
 
 export default {
@@ -191,4 +306,5 @@ export default {
   deleteRock,
   editRock,
   getRock,
+  getRocks,
 };

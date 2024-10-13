@@ -47,20 +47,15 @@
       </span>
 
       <div :class="$style.actions">
-        <v-btn
-          dark
-          color="rgb(38, 38, 38)"
-          @click="switchLoginType">
+        <c-button @click="switchLoginType">
           {{ switchLabel }}
-        </v-btn>
+        </c-button>
 
-        <v-btn
-          :dark="disabled"
-          color="white"
+        <c-button
           :disabled="disabled"
           @click="submit">
           {{ submitLabel }}
-        </v-btn>
+        </c-button>
       </div>
     </div>
   </template-dialog>
@@ -76,12 +71,14 @@ import Vue from 'vue';
 
 // Local Imports
 import TemplateDialog from '../dialog/dialog.vue';
+import CButton from '../../form/button/button.vue';
 
 export default Vue.extend({
   name: 'login-dialog',
 
   components: {
     TemplateDialog,
+    CButton,
   },
 
   data: () => ({

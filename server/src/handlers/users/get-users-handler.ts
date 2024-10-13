@@ -50,8 +50,13 @@ export class GetUsersHandler extends AbstractHandler {
     try {
       // Parse query.
       const {
+        ids = [],
         offset = '0',
         limit = '',
+        route = '',
+        activity = '',
+        location = '',
+        search = '',
       } = req.query || {};
 
       const query = { profilePrivacy: PROFILE_PRIVACY.PUBLIC } as QueryConditions;

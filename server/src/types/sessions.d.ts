@@ -109,5 +109,5 @@ export interface Session extends DatabaseRow {
   /**
    * Max item sent.
    */
-  sent: ClimbingGrade[]
+  sent: ClimbingGrade[];
 }

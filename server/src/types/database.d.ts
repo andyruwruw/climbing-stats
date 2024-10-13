@@ -1,5 +1,4 @@
 /**
-<<<<<<< HEAD
  * Database type enum.
  */
 export type DatabaseType = 'mongo'
@@ -10,20 +9,6 @@ export type DatabaseType = 'mongo'
  * Listener for database.
  */
 export type DatabaseListener = (db: Db) => void;
-=======
- * Types intended for using MongoDB, a NoSQL database.
- */
-
-/**
- * Single database row.
- */
-export interface DatabaseRow {
-  /**
-   * Database Unique Identifier.
-   */
-  _id?: string;
-}
->>>>>>> refs/remotes/origin/main
 
 /**
  * Database column types.
@@ -33,7 +18,6 @@ export type DatabaseColumnTypes = string
 | boolean
 | unknown[]
 | null
-<<<<<<< HEAD
 | undefined
 | ObjectId;
 
@@ -267,9 +251,6 @@ export interface DatabaseInterface {
    */
   deleteAllFiles: () => Promise<boolean>;
 }
-=======
-| undefined;
->>>>>>> refs/remotes/origin/main
 
 /**
  * Object defining a query filter.
@@ -278,15 +259,11 @@ export interface QueryConditions {
   /**
    * Any key for column selection.
    */
-<<<<<<< HEAD
   [key: string]: DatabaseColumnTypes
   | AdvancedQuery
   | JSONQuery
   | TextQuery
   | (() => boolean);
-=======
-  [key: string]: DatabaseColumnTypes | AdvancedQuery;
->>>>>>> refs/remotes/origin/main
 
   /**
    * See https://www.mongodb.com/docs/manual/reference/operator/query/and/
@@ -483,14 +460,10 @@ export interface QueryUpdate {
   /**
    * Updates to specific columns by key.
    */
-<<<<<<< HEAD
   [key: string]:DatabaseColumnTypes
   | AdvancedUpdate
   | QueryUpdate
   | QueryConditions;
-=======
-  [key: string]: DatabaseColumnTypes | AdvancedUpdate | QueryUpdate;
->>>>>>> refs/remotes/origin/main
 
   /**
    * See https://www.mongodb.com/docs/manual/reference/operator/update/addToSet/
@@ -564,7 +537,6 @@ export interface QueryProjection {
 }
 
 /**
-<<<<<<< HEAD
  * SQL Column Types.
  */
 export type SqlColumnTypes = `int(${number})`
@@ -581,8 +553,6 @@ export type SqlColumnTypes = `int(${number})`
 export type MariaDbQuery = Array<MariaDBQuery | MariaDbParams>;
 
 /**
-=======
->>>>>>> refs/remotes/origin/main
  * Placeholder in case MariaDB is prefered.
  */
 interface MariaDBQuery {
@@ -608,25 +578,6 @@ interface MariaDbParams {
 }
 
 /**
-<<<<<<< HEAD
-=======
- * A query with parameters.
- */
-export type MariaDbQuery = Array<IMariaDBQuery | IMariaDbParams>;
-
-/**
- * SQL Column Types.
- */
-export type SqlColumnTypes = `int(${number})`
-| 'bigint'
-| 'smallint'
-| `varchar(${number})`
-| `decimal(${number},${number})`
-| 'text'
-| 'boolean';
-
-/**
->>>>>>> refs/remotes/origin/main
  * Column values references to external tables.
  */
 export interface ColumnReference {
@@ -680,149 +631,3 @@ export interface ColumnOptions extends Dictionary<boolean | number | string | nu
    */
   autoIncrement: boolean;
 }
-<<<<<<< HEAD
-=======
-
-/**
- * Basic data access object.
- */
-export interface DataAccessObjectInterface<T> {
-  /**
-   * Clears all items from the table.
-   *
-   * @returns {Promise<void>} Promise of the action.
-   */
-  clear: () => Promise<void>;
-
-  /**
-   * Not needed.
-   */
-  createTable: () => Promise<void>;
-
-  /**
-   * Deletes all items or a subset of items from the Database.
-   *
-   * @param {QueryConditions} filter The filter to apply to the query.
-   * @returns {Promise<number>} The number of items deleted.
-   */
-  delete: (conditions: QueryConditions) => Promise<number>;
-
-  /**
-   * Deletes a single item by its id from the Database.
-   *
-   * @param {string} id The id of the item.
-   * @returns {Promise<boolean>} Whether the item was deleted.
-   */
-  deleteById: (id: string) => Promise<boolean>;
-
-  /**
-   * Deletes all items from the Database.
-   */
-  deleteAll: () => Promise<void>;
-
-  /**
-   * Not needed.
-   */
-  dropTable: () => Promise<void>;
-
-  /**
-   * Finds all of the item in the Database.
-   *
-   * @param {QueryConditions} filter The filter to apply to the query.
-   * @param {QueryProjection} projection The projection to apply to the query.
-   * @returns {Promise<T[]>} The items.
-   */
-  find: (
-    conditions?: QueryConditions,
-    projection?: QueryProjection,
-    sort?: QuerySort,
-    offset?: number,
-    limit?: number,
-  ) => Promise<T[]>;
-
-  /**
-   * Finds an item by it's id from the Database.
-   *
-   * @param {string} id The id of the item.
-   * @returns {Promise<T | null>} The item or null if not found.
-   */
-  findById: (id: string) => Promise<T | null>
-
-  /**
-   * Finds one item in the Database.
-   *
-   * @param {QueryConditions} filter The filter to apply to the query.
-   * @param {QueryProjection} projection The projection to apply to the query.
-   * @returns {Promise<T | null>} The item.
-   */
-  findOne: (
-    conditions: QueryConditions,
-    projection?: QueryProjection,
-  ) => Promise<T | null>;
-
-  /**
-   * Creates a new instance of the item in the Database.
-   *
-   * @param {T} options The item to create.
-   * @returns {T} The created item.
-   */
-  insert: (item: T) => Promise<number>;
-
-  /**
-   * Pain.
-   */
-  query: (query: string | MariaDbQuery) => Promise<unknown>;
-
-  /**
-   * Updates one item in the Database matching the filter.
-   *
-   * @param {QueryConditions} filter
-   * @param {QueryUpdate} update
-   * @param {boolean} insertNew
-   * @returns {Promise<boolean>} Whether the item was updated.
-   */
-  update: (
-    conditions: QueryConditions,
-    update: QueryUpdate,
-  ) => Promise<number>;
-
-  /**
-   * Updates all items in the Database matching the filter.
-   *
-   * @param {QueryConditions} filter
-   * @param {QueryUpdate} update
-   * @param {boolean} insertNew
-   * @returns {Promise<number>} The number of documents updated.
-   */
-  updateMany: (
-    filter: QueryConditions = {},
-    update: QueryUpdate = {},
-    insertNew = true,
-  ) => Promise<number>;
-}
-
-/**
- * Database instance which holds DAOs.
- */
-export interface DatabaseInterface {
-  /**
-   * Connects to database.
-   */
-  connect: () => Promise<void>;
-
-  /**
-   * Whether or not the database is connected.
-   *
-   * @returns {boolean} Whether or not the database is connected.
-   */
-  isConnected: () => boolean;
-
-  /**
-   * Get's a data access object.
-   * 
-   * @param {string} name Name of data access object.
-   * @returns {DataAccessObjectInterface} Data access object.
-   */
-  getDao: (name: string) => DataAccessObject<unknown>;
-}
->>>>>>> refs/remotes/origin/main

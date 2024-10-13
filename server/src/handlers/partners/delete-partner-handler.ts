@@ -19,19 +19,17 @@ import {
 } from '../../types';
 
 /**
- * Deletes a user.
- * 
- * Middleware handles a majority of the heavy lifting here.
+ * Delete an existing partner.
  */
-export class DeleteUserHandler extends AbstractHandler {
+export class DeletePartnerHandler extends AbstractHandler {
   /**
    * Instantiates a new handler.
    */
   constructor() {
     super(
       REQUEST_TYPE.DELETE,
-      '/',
-      AUTHORIZATION_TYPE.OPTIONAL,
+      '/:id',
+      AUTHORIZATION_TYPE.REQUIRED,
     );
   }
 
@@ -53,30 +51,20 @@ export class DeleteUserHandler extends AbstractHandler {
       if (!id) {
         res.status(400).send({
           error: MESSAGE_HANDLER_PARAMETER_MISSING(
-            'user',
+            'partner',
             'ID',
           ),
         });
         return;
       }
 
-      // If not admin and not their account.
-      if (id !== req.user) {
-        const requesting = await AbstractHandler._database.users.findById(req.user);
-
-        if (!requesting.admin) {
-          res.status(403).send({ error: MESSAGE_UNAUTHORIZED_ERROR });
-          return;
-        }
-      }
-
-      // Check if the user exists.
-      const existing = await AbstractHandler._database.users.findById(id);
+      // Check if the rock exists.
+      const existing = await AbstractHandler._database.climbingPartners.findById(id);
 
       if (!existing) {
         res.status(404).send({
           error: MESSAGE_HANDLER_ITEM_NOT_FOUND(
-            'user',
+            'partner',
             'ID',
             id,
           ),
@@ -84,26 +72,52 @@ export class DeleteUserHandler extends AbstractHandler {
         return;
       }
 
-      // Delete all user data.
+      // Check if the user created this or is an admin.
+      if (existing.user !== req.user) {
+        const user = await AbstractHandler._database.users.findById(req.user);
+
+        if (!user.admin) {
+          res.status(403).send({ error: MESSAGE_UNAUTHORIZED_ERROR });
+          return;
+        }
+      }
+
+      // Delete the area.
       const promises = [] as Promise<any>[];
 
-      promises.push(AbstractHandler._database.users.deleteById(id));
-      promises.push(AbstractHandler._database.sessions.delete({ user: id }));
-      promises.push(AbstractHandler._database.ticks.delete({ user: id }));
-      promises.push(AbstractHandler._database.climbingPartners.delete({ user: id }));
-      promises.push(AbstractHandler._database.tokens.delete({ user: id }));
+      promises.push(AbstractHandler._database.climbingPartners.delete({ id }));
+      promises.push(AbstractHandler._database.sessions.updateMany(
+        { partners: id },
+        {
+          $pull: {
+            partners: id,
+          },
+        },
+        false,
+      ));
+      promises.push(AbstractHandler._database.sessions.updateMany(
+        { carpool: id },
+        {
+          $pull: {
+            carpool: id,
+          },
+        },
+        false,
+      ));
 
       await Promise.all(promises);
 
       res.status(204).send();
     } catch (error) {
       Monitor.log(
-        DeleteUserHandler,
+        DeletePartnerHandler,
         `${error}`,
         Monitor.Layer.WARNING,
       );
 
-      res.status(500).send({ error: MESSAGE_INTERNAL_SERVER_ERROR });
+      res.status(500).send({
+        error: MESSAGE_INTERNAL_SERVER_ERROR,
+      });
     }
   }
 }

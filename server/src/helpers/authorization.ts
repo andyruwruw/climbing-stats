@@ -22,6 +22,7 @@ import {
   PublicUser,
   User,
   TokenData,
+  ClimbingPartner,
 } from '../types/users';
 
 /**
@@ -205,6 +206,8 @@ export const optionalAuthorization = async (
   const authorizationHeader = (req.get('Authorization') || '').split(' ');
   const token = authorizationHeader[0] === 'Bearer' ? authorizationHeader[1] : null;
 
+  console.log(token);
+
   try {
     if (token) {
       const { id = '' } = decodeToken(token);
@@ -247,7 +250,26 @@ export const cleanUser = (user: User): PublicUser => ({
   created: user.created,
   points: user.points,
   admin: user.admin,
+  profilePrivacy: user.profilePrivacy,
+  localePrivacy: user.localePrivacy,
+  agePrivacy: user.agePrivacy,
+  ticksPrivacy: user.ticksPrivacy,
+  sessionsPrivacy: user.sessionsPrivacy,
+  partnersPrivacy: user.partnersPrivacy,
+  pyramidPrivacy: user.pyramidPrivacy,
+  mapPrivacy: user.mapPrivacy,
 });
+
+/**
+ * Cleans a climbing partner of private data.
+ *
+ * @param {ClimbingPartner} partner Partner to be cleaned.
+ * @returns {ClimbingPartner} Partner cleaned data.
+ */
+export const cleanClimbingPartner = (partner: ClimbingPartner): ClimbingPartner => ({
+  ...partner,
+  last: partner.last.length ? partner.last[0] : '?',
+})
 
 /**
  * Encrypt a value.

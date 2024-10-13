@@ -98,11 +98,13 @@ export class GetRockHandler extends AbstractHandler {
         rock.image = '';
         rock.hrefs = {};
         rock.media = [];
-      } else if (rock.privateName && !authenticated) {
+      }
+      if (rock.privateName && !authenticated) {
         rock.name = `Private ${rock.type === ROCK_TYPES.WALL ? 'Wall' : 'Boulder'}`;
         rock.officiallyNamed = false,
         rock.altNames = [];
-      } else if (rock.privateLocation && !authenticated) {
+      }
+      if (rock.privateLocation && !authenticated && rock.hrefs) {
         if ('address' in rock.hrefs) {
           delete rock.hrefs.address;
         }

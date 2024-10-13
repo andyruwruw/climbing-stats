@@ -96,11 +96,13 @@ export class GetAreaHandler extends AbstractHandler {
         area.hrefs = {};
         area.activities = [];
         area.media = [];
-      } else if (area.privateName && !authenticated) {
+      }
+      if (area.privateName && !authenticated) {
         area.name = 'Private Area';
         area.officiallyNamed = false,
         area.altNames = [];
-      } else if (area.privateLocation && !authenticated) {
+      }
+      if (area.privateLocation && !authenticated && area.hrefs) {
         if ('address' in area.hrefs) {
           delete area.hrefs.address;
         }

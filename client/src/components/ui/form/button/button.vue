@@ -7,6 +7,7 @@
     :block="block"
     :border="border"
     :color="color"
+    :dark="true"
     :density="density"
     :disabled="disabled"
     :elevation="elevation"
@@ -18,6 +19,7 @@
     :maxWidth="maxWidth"
     :minHeight="minHeight"
     :minWidth="minWidth"
+    :outlined="true"
     :position="position"
     :prependIcon="prependIcon"
     :readonly="readonly"
@@ -319,5 +321,13 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss" module>
+<style lang="scss">
+.v-btn--outlined {
+  background: #1b1918;
+  border: .5px solid #44403e;
+}
+
+.v-btn.v-size--default {
+  font-size: 0.7rem;
+}
 </style>

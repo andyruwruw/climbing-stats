@@ -1,12 +1,12 @@
 // Local Imports
 import {
-  MESSAGE_HANDLER_PARAMETER_MISSING,
-  MESSAGE_INTERNAL_SERVER_ERROR,
-} from '../../config/messages';
-import {
   AUTHORIZATION_TYPE,
   REQUEST_TYPE,
 } from '../../config';
+import {
+  MESSAGE_HANDLER_PARAMETER_MISSING,
+  MESSAGE_INTERNAL_SERVER_ERROR,
+} from '../../config/messages';
 import { AbstractHandler } from '../abstract-handler';
 import { Monitor } from '../../helpers/monitor';
 
@@ -15,13 +15,12 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { ClimbingActivities } from '../../types/attempts';
-import { Location } from '../../types/climbs';
+import { cleanClimbingPartner } from '@/helpers/authorization';
 
 /**
- * Create a new location.
+ * Create a new partner.
  */
-export class CreateLocationHandler extends AbstractHandler {
+export class CreatePartnerHandler extends AbstractHandler {
   /**
    * Instantiates a new handler.
    */
@@ -46,28 +45,26 @@ export class CreateLocationHandler extends AbstractHandler {
     try {
       // Parse request body.
       const {
-        name,
-        officiallyNamed = true,
-        altNames = [] as string[],
-        outdoors = true,
-        image = '',
-        country = '',
-        state = '',
-        locale = '',
-        color = '',
-        hrefs = {},
-        activities = [] as ClimbingActivities[],
-        isPrivate = false,
-        privateName = false,
-        privateLocation = false,
+        first,
+        last,
+        hide = true,
       } = req.body;
 
       // Check for all required parameters.
-      if (!name) {
+      if (!first) {
         res.status(400).send({
           error: MESSAGE_HANDLER_PARAMETER_MISSING(
-            'location',
-            'name',
+            'partner',
+            'first name',
+          ),
+        });
+        return;
+      }
+      if (!last) {
+        res.status(400).send({
+          error: MESSAGE_HANDLER_PARAMETER_MISSING(
+            'partner',
+            'last name inicial',
           ),
         });
         return;
@@ -75,35 +72,37 @@ export class CreateLocationHandler extends AbstractHandler {
 
       // Create query.
       const query = {
-        name,
-        officiallyNamed,
-        altNames,
-        outdoors,
-        image,
-        country,
-        state,
-        locale,
-        color,
-        hrefs,
-        updated: Date.now(),
-        submitted: req.user,
-        activities,
-        private: isPrivate,
-        privateName,
-        privateLocation,
-      } as Location;
+        user: req.user,
+        first,
+        last,
+        hoursRank: -1,
+        hours: -1,
+        hoursBy: 0,
+        outdoorHoursRank: -1,
+        outdoorHours: -1,
+        sessionsRank: -1,
+        sessions: -1,
+        outdoorSessionsRank: -1,
+        outdoorSessions: -1,
+        outdoorPercent: 0,
+        met: '',
+        metDate: -1,
+        droveRank: -1,
+        drove: 0,
+        hide,
+      };
 
-      const id = await AbstractHandler._database.locations.insert(query);
+      const id = await AbstractHandler._database.climbingPartners.insert(query);
 
       res.status(201).send({
-        location: {
+        partner: {
           id,
-          ...query,
+          ...cleanClimbingPartner(query),
         },
       });
     } catch (error) {
       Monitor.log(
-        CreateLocationHandler,
+        CreatePartnerHandler,
         `${error}`,
         Monitor.Layer.WARNING,
       );

@@ -201,7 +201,7 @@ export class DataAccessObject<T>
    * @returns {T} The created item.
    */
   async insert(item: T): Promise<string> {
-    const entry = this._create(item);
+    const entry = this._create(item) as Dictionary<DatabaseColumnTypes>;
 
     return 'id' in entry ? `${entry.id}` : '';
   }
@@ -222,7 +222,7 @@ export class DataAccessObject<T>
    * @param {T} options The item to create.
    * @returns {T} The created item.
    */
-  async _create(options: T): Promise<T> {
+  _create(options: T): T {
     const entry = {
       id: uuidv4(),
       ...options,
@@ -285,7 +285,7 @@ export class DataAccessObject<T>
     if (itemIds.length === 0 && insertNew) {
       try {
         // Risky, but don't have many other options from the Abstract class.
-        await this._create(update as unknown as T);
+        this._create(update as unknown as T);
 
         return 1;
       } catch (error) {

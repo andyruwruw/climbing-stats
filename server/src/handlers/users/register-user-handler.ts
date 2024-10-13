@@ -130,6 +130,8 @@ export class RegisterUserHandler extends AbstractHandler {
 
       const id = await AbstractHandler._database.users.insert(newUser);
 
+      console.log(id);
+
       // Generate a token.
       const token = generateToken(id);
 

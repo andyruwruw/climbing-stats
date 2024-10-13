@@ -59,7 +59,6 @@ export class CreateRockHandler extends AbstractHandler {
         isPrivate = false,
         privateName = false,
         privateLocation = false,
-        media = [] as string[],
       } = req.body;
 
       // Check for all required parameters.
@@ -128,7 +127,7 @@ export class CreateRockHandler extends AbstractHandler {
         private: isPrivate,
         privateName,
         privateLocation,
-        media,
+        media: [],
       };
 
       const id = await AbstractHandler._database.rocks.insert(query);

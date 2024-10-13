@@ -9,7 +9,6 @@ import {
 // Local Imports
 import { getToken } from '@/helpers/token';
 import { RETRIEVAL_STATUS } from '../../config';
-import router from '../../router';
 import api from '../../api';
 
 // Types
@@ -53,6 +52,16 @@ const getters: GetterTree<UserState, RootState> = {
    */
   getUsername(state: UserState): string | null {
     return state.user ? state.user.username : null;
+  },
+
+  /**
+   * Retrieves the current logged in user's name.
+   *
+   * @param {UserState} state Module state.
+   * @returns {string | null} Current logged in user's name.
+   */
+  getDisplayName(state: UserState): string | null {
+    return state.user ? state.user.displayName : null;
   },
 
   /**
@@ -232,7 +241,10 @@ const actions: ActionTree<UserState, RootState> = {
    * @returns {Promise<void>} Promise of the action.
    */
   async login(
-    { commit },
+    {
+      commit,
+      dispatch,
+    },
     {
       username,
       password,
@@ -263,7 +275,11 @@ const actions: ActionTree<UserState, RootState> = {
           false,
         );
 
-        router.push('/home');
+        dispatch(
+          'navigation/goToHome',
+          {},
+          { root: true },
+        );
       } else {
         commit(
           'setStatus',
@@ -295,7 +311,10 @@ const actions: ActionTree<UserState, RootState> = {
    * @returns {Promise<void>} Promise of the action.
    */
   async register(
-    { commit },
+    {
+      commit,
+      dispatch,
+    },
     {
       username,
       password,
@@ -328,7 +347,11 @@ const actions: ActionTree<UserState, RootState> = {
           false,
         );
 
-        router.push('/home');
+        dispatch(
+          'navigation/goToHome',
+          {},
+          { root: true },
+        );
       } else {
         commit(
           'setStatus',

@@ -190,4 +190,4 @@ export const PAGE_SIZE = 25;
 /**
  * Maximum number of cached items.
  */
-export const MAX_CACHE_SIZE = 20;
+export const MAX_CACHE_SIZE = 1;

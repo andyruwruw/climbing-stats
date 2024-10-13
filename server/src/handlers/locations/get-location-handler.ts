@@ -96,11 +96,13 @@ export class GetLocationHandler extends AbstractHandler {
         location.hrefs = {};
         location.activities = [];
         location.media = [];
-      } else if (location.privateName && !authenticated) {
+      }
+      if (location.privateName && !authenticated) {
         location.name = 'Private Location';
         location.officiallyNamed = false,
         location.altNames = [];
-      } else if (location.privateLocation && !authenticated) {
+      }
+      if (location.privateLocation && !authenticated && location.hrefs) {
         if ('address' in location.hrefs) {
           delete location.hrefs.address;
         }

@@ -97,11 +97,13 @@ export class GetRouteHandler extends AbstractHandler {
         route.image = '';
         route.hrefs = {};
         route.media = [];
-      } else if (route.privateName && !authenticated) {
+      }
+      if (route.privateName && !authenticated) {
         route.name = 'Private Route';
         route.officiallyNamed = false,
         route.altNames = [];
-      } else if (route.privateLocation && !authenticated) {
+      }
+      if (route.privateLocation && !authenticated && route.hrefs) {
         if ('address' in route.hrefs) {
           delete route.hrefs.address;
         }

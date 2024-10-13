@@ -1,5 +1,10 @@
 // Local Imports
 import { AbstractRouter } from '../abstract-router';
+import { CreateTickHandler } from './create-tick-handler';
+import { DeleteTickHandler } from './delete-tick-handler';
+import { EditTickHandler } from './edit-tick-handler';
+import { GetTickHandler } from './get-tick-handler';
+import { GetTicksHandler } from './get-ticks-handler';
 
 /**
  * Tick routes.
@@ -18,6 +23,10 @@ export class TickRoutes extends AbstractRouter {
    * @returns {void}
    */
   _initialize(): void {
-    // this._routes.push(new DeleteTickHandler());
+    this._routes.push(new CreateTickHandler());
+    this._routes.push(new DeleteTickHandler());
+    this._routes.push(new EditTickHandler());
+    this._routes.push(new GetTickHandler());
+    this._routes.push(new GetTicksHandler());
   }
 }

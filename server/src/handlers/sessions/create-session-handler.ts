@@ -16,8 +16,10 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { ClimbingActivities } from '../../types/attempts';
-import { ClimbingGrade } from '../../types/climbs';
+import {
+  ClimbingActivities,
+  ClimbingGrade,
+ } from '../../types/climbs';
 import { Session } from '../../types/sessions';
 
 /**

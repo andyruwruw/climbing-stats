@@ -3,7 +3,6 @@ import {
   AUTHORIZATION_TYPE,
   PAGE_SIZE,
   REQUEST_TYPE,
-  ROCK_TYPES,
 } from '../../config';
 import { MESSAGE_INTERNAL_SERVER_ERROR } from '../../config/messages';
 import { AbstractHandler } from '../abstract-handler';
@@ -178,7 +177,7 @@ export class GetSessionsHandler extends AbstractHandler {
         const session = {...sessions[i]};
 
         // Authenticate the session.
-        let authenticated = (req.user && session.user === req.user) || isAdmin;
+        const authenticated = (req.user && session.user === req.user) || isAdmin;
 
         if (!authenticated) {
           let owner;

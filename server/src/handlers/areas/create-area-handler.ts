@@ -17,8 +17,10 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { ClimbingActivities } from '../../types/attempts';
-import { Area } from '../../types/climbs';
+import {
+  Area,
+  ClimbingActivities,
+} from '../../types/climbs';
 
 /**
  * Create a new area.

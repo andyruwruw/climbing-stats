@@ -13,7 +13,7 @@ export class ClimbingPartnersDataAccessObject
    * Retrieves collection name.
    */
   _getCollectionName(): string {
-    return 'partner';
+    return 'partners';
   }
 
   /**

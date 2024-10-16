@@ -2,6 +2,23 @@
 import { DatabaseRow } from './database';
 
 /**
+ * Various climbing activities.
+ */
+export type ClimbingActivities = 'sport'
+| 'top-rope'
+| 'traditional'
+| 'boulder'
+| 'followed'
+| 'ice'
+| 'mixed'
+| 'alpine'
+| 'aid'
+| 'free-solo'
+| 'speed'
+| 'deep-water-solo'
+| 'free-base';
+
+/**
  * Types of grading systems.
  */
 export type GradingSystem = 'v-scale'
@@ -37,13 +54,17 @@ export type ClimbingGrade = 'VB'
 | `V${number}`
 | `V${number}+`
 | `V${number}-`
+| `V${number}-${number}`
+| `V?`
 | `${string}${number}`
 | `${string}${number}+`
 | `${string}${number}-`
 | `${number}.${number}${string}`
+| `${number}.${number}${string}/${string}`
 | `${number}.${number}`
 | `${number}.${number}+`
 | `${number}.${number}-`
+| `${number}.?`
 | 'S'
 | 'HS'
 | 'VS'
@@ -304,7 +325,7 @@ export interface Rock extends DatabaseRow {
   /**
    * Does this item contain private data?
    */
-  private: string;
+  private: boolean;
 
   /**
    * Whether this location contains private data.

@@ -3,7 +3,6 @@ import {
   AUTHORIZATION_TYPE,
   PAGE_SIZE,
   REQUEST_TYPE,
-  ROCK_TYPES,
 } from '../../config';
 import { MESSAGE_INTERNAL_SERVER_ERROR } from '../../config/messages';
 import { AbstractHandler } from '../abstract-handler';
@@ -56,8 +55,8 @@ export class GetRoutesHandler extends AbstractHandler {
         area = '',
         rock = '',
         type = '',
-        grade = '',
-        danger = '',
+        // grade = '',
+        // danger = '',
         user = '',
         isPrivate = '',
       } = req.query || {};
@@ -119,7 +118,7 @@ export class GetRoutesHandler extends AbstractHandler {
         const route = {...routes[i]};
 
         // Authenticate the session.
-        let authenticated = (req.user && route.submitted === req.user) || isAdmin;
+        const authenticated = (req.user && route.submitted === req.user) || isAdmin;
 
         if (route.private && !authenticated) {
           continue;

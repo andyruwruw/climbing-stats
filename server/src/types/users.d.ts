@@ -1,5 +1,7 @@
 // Types
+import { GradingSystem } from './climbs';
 import { DatabaseRow } from './database';
+import { ExternalHref } from './index';
 
 /**
  * Gender options.
@@ -127,6 +129,16 @@ export interface User extends PublicUser {
    * User password hashed.
    */
   password: string;
+
+  /**
+   * Grades to use for bouldering.
+   */
+  boulderingGrades: GradingSystem;
+
+  /**
+   * Grades to use for routes.
+   */
+  routeGrades: GradingSystem
 }
 
 /**
@@ -252,4 +264,54 @@ export interface TokenData {
    * User ID.
    */
   id: string;
+}
+
+/**
+ * Temporary partner tracker.
+ */
+export interface PartnerTracker {
+  /**
+   * Whether to add this data.
+   */
+  add: boolean;
+
+  /**
+   * Partner ID.
+   */
+  id: string;
+
+  /**
+   * Number of hours clocked.
+   */
+  hours: number;
+
+  /**
+   * Number of outdoor hours.
+   */
+  outdoorHours: number;
+
+  /**
+   * Number of sessions.
+   */
+  sessions: number;
+
+  /**
+   * Number of outdoor sessions.
+   */
+  outdoorSessions: number;
+
+  /**
+   * Id of oldest session.
+   */
+  oldestSession: string;
+
+  /**
+   * Date of oldest session.
+   */
+  oldestSessionDate: number;
+
+  /**
+   * Number of hours driven.
+   */
+  drivenHours: number;
 }

@@ -15,8 +15,10 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { ClimbingActivities } from '../../types/attempts';
-import { Location } from '../../types/climbs';
+import {
+  ClimbingActivities,
+  Location,
+} from '../../types/climbs';
 
 /**
  * Create a new location.

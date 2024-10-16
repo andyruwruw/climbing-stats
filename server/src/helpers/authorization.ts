@@ -15,15 +15,15 @@ import { Environment } from './environment';
 
 // Types
 import {
-  ServerRequest,
-  ServerResponse,
-} from '../types';
-import {
   PublicUser,
   User,
   TokenData,
   ClimbingPartner,
 } from '../types/users';
+import {
+  ServerRequest,
+  ServerResponse,
+} from '../types';
 
 /**
  * Generates and encrypts an authorization token.
@@ -205,8 +205,6 @@ export const optionalAuthorization = async (
 ): Promise<void> => {
   const authorizationHeader = (req.get('Authorization') || '').split(' ');
   const token = authorizationHeader[0] === 'Bearer' ? authorizationHeader[1] : null;
-
-  console.log(token);
 
   try {
     if (token) {

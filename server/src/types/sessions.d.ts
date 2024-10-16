@@ -1,5 +1,8 @@
 // Types
-import { ClimbingGrade } from './climbs';
+import {
+  ClimbingActivities,
+  ClimbingGrade,
+} from './climbs';
 import { DatabaseRow } from './database';
 
 /**
@@ -110,4 +113,29 @@ export interface Session extends DatabaseRow {
    * Max item sent.
    */
   sent: ClimbingGrade[];
+}
+
+/**
+ * Counts sessions on projects.
+ */
+export interface SessionCounter {
+  /**
+   * Unique identifier of the route.
+   */
+  id: string,
+
+  /**
+   * First session date on the route.
+   */
+  first: number,
+
+  /**
+   * Last session date on the route.
+   */
+  last: number,
+
+  /**
+   * Total number of sessions on the route.
+   */
+  total: number,
 }

@@ -1,15 +1,16 @@
 // Local Imports
 import {
-  MESSAGE_HANDLER_ITEM_FOUND,
-  MESSAGE_HANDLER_PARAMETER_MISSING,
-  MESSAGE_INTERNAL_SERVER_ERROR,
-} from '../../config/messages';
-import {
   AUTHORIZATION_TYPE,
+  GRADING_SYSTEMS,
   PROFILE_PRIVACY,
   REQUEST_TYPE,
   USER_GENDER,
 } from '../../config';
+import {
+  MESSAGE_HANDLER_ITEM_FOUND,
+  MESSAGE_HANDLER_PARAMETER_MISSING,
+  MESSAGE_INTERNAL_SERVER_ERROR,
+} from '../../config/messages';
 import {
   cleanUser,
   generateToken,
@@ -126,11 +127,11 @@ export class RegisterUserHandler extends AbstractHandler {
         partnersPrivacy: PROFILE_PRIVACY.UNLISTED,
         pyramidPrivacy: PROFILE_PRIVACY.UNLISTED,
         mapPrivacy: PROFILE_PRIVACY.UNLISTED,
+        boulderingGrades: GRADING_SYSTEMS.V_SCALE,
+        routeGrades: GRADING_SYSTEMS.YOSEMITE_DECIMAL_SYSTEM,
       };
 
       const id = await AbstractHandler._database.users.insert(newUser);
-
-      console.log(id);
 
       // Generate a token.
       const token = generateToken(id);

@@ -7,6 +7,7 @@ import {
   MESSAGE_HANDLER_PARAMETER_MISSING,
   MESSAGE_INTERNAL_SERVER_ERROR,
 } from '../../config/messages';
+import { cleanClimbingPartner } from '../../helpers/authorization';
 import { AbstractHandler } from '../abstract-handler';
 import { Monitor } from '../../helpers/monitor';
 
@@ -15,7 +16,6 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { cleanClimbingPartner } from '@/helpers/authorization';
 
 /**
  * Create a new partner.

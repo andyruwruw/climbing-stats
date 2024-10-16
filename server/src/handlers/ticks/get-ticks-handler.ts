@@ -3,7 +3,6 @@ import {
   AUTHORIZATION_TYPE,
   PAGE_SIZE,
   REQUEST_TYPE,
-  ROCK_TYPES,
 } from '../../config';
 import { MESSAGE_INTERNAL_SERVER_ERROR } from '../../config/messages';
 import { AbstractHandler } from '../abstract-handler';
@@ -16,10 +15,7 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import {
-  QueryConditions,
-  TextQuery,
-} from '../../types/database';
+import { QueryConditions } from '../../types/database';
 import { User } from '../../types/users';
 
 /**
@@ -57,12 +53,12 @@ export class GetTicksHandler extends AbstractHandler {
         protection = '',
         date = '',
         feature = '',
-        grade = '',
-        search = '',
+        // grade = '',
+        // search = '',
         offset = '0',
         limit = '',
-        location = '',
-        area = '',
+        // location = '',
+        // area = '',
         before = '',
         after = '',
         activity = '',
@@ -156,7 +152,7 @@ export class GetTicksHandler extends AbstractHandler {
         const tick = {...ticks[i]};
 
         // Authenticate the session.
-        let authenticated = (req.user && tick.user === req.user) || isAdmin;
+        const authenticated = (req.user && tick.user === req.user) || isAdmin;
 
         if (!authenticated) {
           let owner;

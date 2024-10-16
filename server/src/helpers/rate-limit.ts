@@ -2,8 +2,8 @@
 import { NextFunction } from 'express';
 
 // Local Imports
-import { MESSAGE_INTERNAL_SERVER_ERROR } from '../config/messages';
-import { Monitor } from './monitor';
+// import { MESSAGE_INTERNAL_SERVER_ERROR } from '../config/messages';
+// import { Monitor } from './monitor';
 
 // Types
 import {
@@ -32,9 +32,9 @@ export class RateLimiter {
   static cleanUp() {
     const minuteAgo = Date.now() - 60000;
 
-    let removeIps = [] as string[];
+    const removeIps = [] as string[];
 
-    for (let ip in RateLimiter.ips) {
+    for (const ip in RateLimiter.ips) {
       RateLimiter.ips[ip] = RateLimiter.ips[ip].filter((time: number) => {
         return time > minuteAgo;
       });
@@ -44,13 +44,13 @@ export class RateLimiter {
       }
     }
 
-    for (let ip of removeIps) {
+    for (const ip of removeIps) {
       delete RateLimiter.ips[ip];
     }
 
-    let removeUsers = [] as string[];
+    const removeUsers = [] as string[];
 
-    for (let user in RateLimiter.users) {
+    for (const user in RateLimiter.users) {
       RateLimiter.users[user] = RateLimiter.users[user].filter((time: number) => {
         return time > minuteAgo;
       });
@@ -60,7 +60,7 @@ export class RateLimiter {
       }
     }
 
-    for (let user of removeUsers) {
+    for (const user of removeUsers) {
       delete RateLimiter.users[user];
     }
   }

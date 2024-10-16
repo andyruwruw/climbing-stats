@@ -100,26 +100,6 @@ export class Environment {
   }
 
   /**
-   * Retrieves the number of mock annotations to add per user..
-   *
-   * @default 30
-   * @returns {number} Number of mock annotations per user.
-   */
-  static getMockAnnotationsPerUser(): number {
-    return (parseInt(process.env.MOCK_ANNOTATIONS_PER_USER as string || '30', 10) as number) || 30;
-  }
-
-  /**
-   * Retrieves the number of mock users to add.
-   *
-   * @default 100
-   * @returns {number} Number of mock users.
-   */
-  static getMockUserCount(): number {
-    return (parseInt(process.env.MOCK_USERS as string || '100', 10) as number) || 100;
-  }
-
-  /**
    * Returns origin URL depending on environment.
    *
    * @default DEVELOPMENT_URL
@@ -226,12 +206,12 @@ export class Environment {
   }
 
   /**
-   * Whether to add mock data to database.
+   * Whether to add base data to database.
    *
    * @default false
-   * @returns {boolean} Whether to add mock data to database.
+   * @returns {boolean} Whether to add base data to database.
    */
-  static shouldUseMockData(): boolean {
-    return process.env.MOCK_DATA === 'true';
+  static shouldUseBaseData(): boolean {
+    return process.env.BASE_DATA === 'true';
   }
 }

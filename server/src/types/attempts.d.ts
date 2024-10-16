@@ -1,4 +1,5 @@
 // Types
+import { ClimbingActivities, ClimbingGrade } from './climbs';
 import { DatabaseRow } from './database';
 
 /**
@@ -25,23 +26,6 @@ type Protection = 'pads'
 | 'water'
 | 'parachute'
 | 'net';
-
-/**
- * Various climbing activities.
- */
-export type ClimbingActivities = 'sport'
-| 'top-rope'
-| 'traditional'
-| 'boulder'
-| 'followed'
-| 'ice'
-| 'mixed'
-| 'alpine'
-| 'aid'
-| 'free-solo'
-| 'speed'
-| 'deep-water-solo'
-| 'free-base';
 
 /**
  * An attempt on a route.
@@ -109,6 +93,21 @@ export interface Tick extends DatabaseRow {
 
   /**
    * Suggested grade.
+   */
+  grade: ClimbingGrade;
+}
+
+/**
+ * Tracks routes for max leaderboards.
+ */
+export interface RouteMaxTracker {
+  /**
+   * Unique identifier of the route.
+   */
+  id: string;
+
+  /**
+   * Grade of the climb.
    */
   grade: ClimbingGrade;
 }

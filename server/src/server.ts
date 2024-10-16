@@ -3,7 +3,6 @@ import express, {
   Express,
   NextFunction,
 } from 'express';
-import path from 'node:path';
 
 // Local Imports
 import {
@@ -20,7 +19,7 @@ import { REQUEST_TYPE } from './config';
 import { Environment } from './helpers/environment';
 import { RateLimiter } from './helpers/rate-limit';
 import { getDatabase } from './database';
-import { CsvParser } from './helpers/csv-parser';
+import { Populator } from './helpers/populator';
 import { Monitor } from './helpers/monitor';
 
 // Types
@@ -75,6 +74,10 @@ export class Server {
       1000 * 60 * 10,
     );
 
+    Populator.setDatabase(Server._database);
+    
+    Populator.run();
+
     Server._app.listen(
       Environment.getServerPort(),
       () => {
@@ -85,17 +88,6 @@ export class Server {
         );
       },
     );
-
-    const reader = new CsvParser(path.join(
-      __dirname,
-      './data/sessions.csv',
-    ));
-
-    await reader.read();
-
-    for (let i = 0; i < 5; i += 1) {
-      console.log(reader.at(i + 50));
-    }
   }
 
   /**

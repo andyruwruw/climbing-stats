@@ -17,7 +17,7 @@ import {
   ServerRequest,
   ServerResponse,
 } from '../../types';
-import { ClimbingActivities } from '../../types/attempts';
+import { ClimbingActivities } from '../../types/climbs';
 
 /**
  * Create a new rock.

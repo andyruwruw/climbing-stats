@@ -1,10 +1,21 @@
 // Packages
-import { Dictionary } from '@/types';
 import {
   FileHandle,
   open,
 } from 'node:fs/promises';
-import { IS_PM_TIME } from './sanitize';
+
+// Local Imports
+import {
+  parseAttemptStatus,
+  parseDate,
+  parseProtection,
+  parseSentOfStatus,
+  parseTime
+} from './sanitize';
+import { CLIMBING_ACTIVITY } from '../config';
+
+// Types
+import { Dictionary } from '../types';
 
 /**
  * Aids in the reading and parsing of CSV files.
@@ -59,36 +70,13 @@ export class CsvParser {
     let headerFound = true;
 
     for await (const line of this._file.readLines()) {
-      const row = [] as string[];
+      const row = this._parseLine(line);
 
-      let token = '';
-      let inString = false;
-      let rowLength = 0;
-      let realRows = 0;
-
-      for (let i = 0; i < line.length; i += 1) {
-        if (line[i] === '"') {
-          inString = !inString;
-        } else if (line[i] === ',' && !inString) {
-          if (!this._disabledColumns.includes(realRows)) {
-            row.push(token);
-          }
-          
-          token = '';
-          realRows += 1;
-        } else {
-          token = token.concat(line[i]);
-          rowLength += 1;
-        }
-      }
-
-      row.push(token);
-
-      if (rowLength) {
+      if (row.join('').length > 2) {
         if (headerFound) {
           for (let j = 0; j < row.length; j += 1) {
             const sanitized = row[j].replace(' / ', '-').replace(' ', '-').replace('.', '').toLowerCase();
-
+  
             if (!sanitized.length) {
               this._disabledColumns.push(j);
             } else {
@@ -96,7 +84,7 @@ export class CsvParser {
               this._headerMap[sanitized] = j;
             }
           }
-
+  
           headerFound = false;
         } else {
           this._rows.push(row);
@@ -125,6 +113,39 @@ export class CsvParser {
   }
 
   /**
+   * Parses a comma separated line.
+   *
+   * @param {string} line Unparsed line. 
+   * @returns {string[]} Row values comma separated.
+   */
+  protected _parseLine(line: string): string[] {
+    const row = [] as string[];
+
+    let token = '';
+    let inString = false;
+    let realRows = 0;
+
+    for (let i = 0; i < line.length; i += 1) {
+      if (line[i] === '"') {
+        inString = !inString;
+      } else if (line[i] === ',' && !inString) {
+        if (!this._disabledColumns.includes(realRows)) {
+          row.push(token);
+        }
+        
+        token = '';
+        realRows += 1;
+      } else if (token !== '' || line[i] !== ' ') {
+        token = token.concat(line[i]);
+      }
+    }
+
+    row.push(token);
+
+    return row;
+  }
+
+  /**
    * Retrieves a row as an object.
    *
    * @param {number} index Row to retrieve.
@@ -137,34 +158,84 @@ export class CsvParser {
       return obj;
     }
 
-    const FIND_NUMBERS = /([0-9]+)/g;
-
     const row = this._rows[index];
-    let date = -1;
+    const date = -1;
 
     for (let i = 0; i < row.length; i += 1) {
       if (this._header[i] === 'date') {
-        date = Date.parse(row[i].replace('/', '-'));
-        obj.date = date;
+        obj.date = parseDate(row[i]);
       } else if (this._header[i] === 'start' || this._header[i] === 'end') {
-        let hour = -1;
-        let minutes = -1;
+        obj[this._header[i]] = date + parseTime(row[i]);
+      } else if (this._header[i] === 'duration' || this._header[i] === 'driving') {
+        const duration = parseTime(row[i]);
+        obj[this._header[i]] = duration;
 
-        let match = FIND_NUMBERS.exec(row[i]);
-        while (match !== null) {
-          console.log(match[0]);
-          if (hour === -1) {
-            hour = IS_PM_TIME.test(row[i]) ? parseInt(match[0], 10) + 12 : parseInt(match[0], 10);
-          } else if (minutes === -1) {
-            minutes = parseInt(match[0], 10);
-          } else {
-            break;
-          }
-
-          match = FIND_NUMBERS.exec(row[i]);
+        if (this._header[i] === 'duration'
+          && 'end' in obj
+          && 'start' in obj
+          && obj.end !== obj.start + duration) {
+          obj.end = obj.start + duration;
         }
+      } else if (this._header[i] === 'b') {
+        obj.bouldering = (row[i] === 'B');
+      } else if (this._header[i] === 'r') {
+        obj.ropes = (row[i] === 'R');
+      } else if (this._header[i] === 'o') {
+        obj.outdoors = (row[i] === 'O')
+      } else if (this._header[i] === 'subarea') {
+        if (row[i] == '-') {
+          obj.subarea = [];
+        } else {
+          obj.subarea = row[i].split(',');
 
-        obj[this._header[i]] = date + (hour * 3600000) + (minutes + 60000);
+          for (let j = 0; j < obj.subarea.length; j += 1) {
+            if (obj.subarea[j][0] === ' ') {
+              obj.subarea[j] = obj.subarea[j].substring(1);
+            }
+          }
+        }
+      } else if ([
+        'outdoor-max',
+        'indoor-max',
+        'act-cal',
+        'tot-cal',
+        'avg-h',
+        'low-h',
+        'hi-h',
+      ].includes(this._header[i])) {
+        if (!isNaN(parseInt(row[i], 10))) {
+          obj[this._header[i]] = parseInt(row[i], 10);
+        } else {
+          obj[this._header[i]] = [
+            'outdoor-max',
+            'indoor-max',
+          ].includes(this._header[i]) ? 0 : -1;
+        }
+      } else if (this._header[i] === 'partners' || this._header[i] === 'driving-with') {
+        if (!row[i].length) {
+          obj[this._header[i]] = [];
+        } else {
+          obj[this._header[i]] = row[i].split(',');
+        }
+      } else if (this._header[i] === 'type'
+        && (row[i] === 'Route'
+        || row[i] === 'Boulder')) {
+        obj[this._header[i]] = row[i] === 'Route' ? CLIMBING_ACTIVITY.SPORT : CLIMBING_ACTIVITY.BOULDER;
+      } else if (this._header[i] === 'danger' && row[i] === '-') {
+        obj[this._header[i]] = '';
+      } else if (this._header[i] === 'a') {
+        if (isNaN(parseInt(row[i], 10))) {
+          obj[this._header[i]] = 0;
+        } else {
+          obj[this._header[i]] = parseInt(row[i], 10);
+        }
+      } else if (row[i] === '-') {
+        obj[this._header[i]] = '';
+      } else if (this._header[i] === 'protection') {
+        obj[this._header[i]] = parseProtection(row[i]);
+      } else if (this._header[i] === 'status') {
+        obj[this._header[i]] = parseAttemptStatus(row[i]);
+        obj.sent = parseSentOfStatus(row[i]);
       } else {
         obj[this._header[i]] = row[i];
       }

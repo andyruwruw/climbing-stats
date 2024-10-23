@@ -1,5 +1,6 @@
 <template>
   <div :class="$style.component">
+    <slot></slot>
   </div>
 </template>
 
@@ -13,5 +14,11 @@ export default Vue.extend({
 
 <style lang="scss" module>
 .component {
+  padding: 16px;
+  border-radius: 6px;
+  border: .8px solid #2c2927;
+  background: #1B1918;
+  display: flex;
+  flex-direction: column;
 }
 </style>

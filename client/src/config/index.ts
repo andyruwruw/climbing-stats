@@ -141,3 +141,38 @@ export const VIEWPORT_BREAKPOINTS = {
 
   // All above is huge.
 };
+
+/**
+ * Number of milliseconds in a day.
+ */
+export const MILLISECONDS_IN_SECOND = 1000;
+
+/**
+ * Number of milliseconds in a day.
+ */
+export const MILLISECONDS_IN_MINUTE = 60000;
+
+/**
+ * Number of milliseconds in a day.
+ */
+export const MILLISECONDS_IN_HOUR = 3600000;
+
+/**
+ * Number of milliseconds in a day.
+ */
+export const MILLISECONDS_IN_DAY = 86400000;
+
+/**
+ * Number of milliseconds in a week.
+ */
+export const MILLISECONDS_IN_WEEK = 604800000;
+
+/**
+ * Number of milliseconds in a month.
+ */
+export const MILLISECONDS_IN_MONTH = 2629746000;
+
+/**
+ * Number of milliseconds in a year.
+ */
+export const MILLISECONDS_IN_YEAR = 31556952000;

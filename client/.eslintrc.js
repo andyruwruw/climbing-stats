@@ -17,5 +17,9 @@ module.exports = {
     'no-use-before-define': 'off',
     'max-len': 'off',
     'import/extensions': 'off',
+    'import/prefer-default-export': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'no-underscore-dangle': 'off',
+    'prefer-destructuring': 'off',
   },
 };

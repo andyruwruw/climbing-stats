@@ -19,6 +19,11 @@ export interface Response<T> {
 }
 
 /**
+ * A date string.
+ */
+export type DateString = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
+
+/**
  * Generic database entry.
  */
 export interface DatabaseRow {
@@ -1052,3 +1057,168 @@ export type RouterPageName = 'landing'
 | 'route'
 | '404'
 | '';
+
+/**
+ * Overall session data.
+ */
+export interface SessionSummations {
+  /**
+   * Number of sessions.
+   */
+  sessions: number;
+
+  /**
+   * Starting date of climbing.
+   */
+  start: number;
+
+  /**
+   * First session.
+   */
+  startSession: string;
+
+  /**
+   * Number of days climbed.
+   */
+  days: number;
+
+  /**
+   * Number of hours climbed.
+   */
+  hours: number;
+
+  /**
+   * Hours per day since start.
+   */
+  hoursPerDay: number;
+
+  /**
+   * Longest rest between sessions.
+   */
+  longestRest: number;
+
+  /**
+   * Number of indoor hours.
+   */
+  indoorHours: number;
+
+  /**
+   * Number of indoor sessions.
+   */
+  indoorSessions: number;
+
+  /**
+   * Number of outdoor hours.
+   */
+  outdoorHours: number;
+
+  /**
+   * Number of outdoor sessions.
+   */
+  outdoorSessions: number;
+
+  /**
+   * Indoor hours climbed per outdoor hours.
+   */
+  indoorPerOutdoor: number;
+}
+
+/**
+ * Overall tick data.
+ */
+export interface TickSummations {
+  /**
+   * Total number of unique climbs attempted.
+   */
+  uniqueClimbs: number;
+
+  /**
+   * Total climbs attempted.
+   */
+  totalClimbs: number;
+
+  /**
+   * Total number of unique boulders attempted.
+   */
+  uniqueBoulder: number;
+
+  /**
+   * Total boulders attempted.
+   */
+  totalBoulders: number;
+
+  /**
+   * Total number of unique routes attempted.
+   */
+  uniqueRoutes: number;
+
+  /**
+   * Total routes attempted.
+   */
+  totalRoutes: number;
+
+  /**
+   * Log of ticks, flashes, onsights and attempts at each grade.
+   */
+  tickLists: Record<ClimbingActivities, TickTracker[]>,
+
+  /**
+   * Logs of session counters for each route.
+   */
+  routeSessions: Dictionary<SessionCounter>,
+}
+
+/**
+ * Counts sessions on projects.
+ */
+export interface SessionCounter {
+  /**
+   * Unique identifier of the route.
+   */
+  id: string,
+
+  /**
+   * First session date on the route.
+   */
+  first: number,
+
+  /**
+   * Last session date on the route.
+   */
+  last: number,
+
+  /**
+   * Total number of sessions on the route.
+   */
+  total: number,
+}
+
+/**
+ * Tracks routes ticks.
+ */
+export interface TickTracker {
+  /**
+   * Grade this entry is for.
+   */
+  grade: ClimbingGrade | Dictionary<ClimbingGrade>;
+
+  /**
+   * Tick unique identifiers for attempts on this grade.
+   */
+  attempts: string[];
+
+  /**
+   * Route unique identifiers of unique climbs sent.
+   */
+  ticks: string[];
+
+  /**
+   * Route unique identifiers of unique climbs flashed.
+   */
+  flashes: string[];
+
+  /**
+   * Route unique identifiers of unique climbs onsight.
+   */
+  onsights: string[];
+}

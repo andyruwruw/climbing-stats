@@ -45,6 +45,16 @@ const getters: GetterTree<UserState, RootState> = {
   },
 
   /**
+   * Retrieves the current logged in user's unique identifier.
+   *
+   * @param {UserState} state Module state.
+   * @returns {string | null} Current logged in user's unique identifier.
+   */
+  getUserId(state: UserState): string | null | undefined {
+    return state.user ? state.user.id : null;
+  },
+
+  /**
    * Retrieves the current logged in user's username.
    *
    * @param {UserState} state Module state.
@@ -193,6 +203,7 @@ const actions: ActionTree<UserState, RootState> = {
   async checkSession({
     state,
     commit,
+    dispatch,
   }): Promise<void> {
     if (state.checked) {
       return;
@@ -220,6 +231,16 @@ const actions: ActionTree<UserState, RootState> = {
         commit(
           'setStatus',
           RETRIEVAL_STATUS.SUCCESS,
+        );
+        dispatch(
+          'sessions/getData',
+          {},
+          { root: true },
+        );
+        dispatch(
+          'ticks/getData',
+          {},
+          { root: true },
         );
       }
     } catch (error) {
@@ -277,6 +298,16 @@ const actions: ActionTree<UserState, RootState> = {
 
         dispatch(
           'navigation/goToHome',
+          {},
+          { root: true },
+        );
+        dispatch(
+          'sessions/getData',
+          {},
+          { root: true },
+        );
+        dispatch(
+          'ticks/getData',
           {},
           { root: true },
         );
@@ -349,6 +380,16 @@ const actions: ActionTree<UserState, RootState> = {
 
         dispatch(
           'navigation/goToHome',
+          {},
+          { root: true },
+        );
+        dispatch(
+          'sessions/getData',
+          {},
+          { root: true },
+        );
+        dispatch(
+          'ticks/getData',
           {},
           { root: true },
         );

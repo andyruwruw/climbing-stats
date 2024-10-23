@@ -12,16 +12,12 @@ import {
 // Types
 import {
   ClimbingActivities,
-  ExternalHref,
-  GradeSuggestions,
   Response,
-  DangerSuggestions,
-  Route,
   ClimbingGrade,
-  RouteDanger,
   AttemptStatus,
   Tick,
   Protection,
+  TickSummations,
 } from '../types';
 
 /**
@@ -200,6 +196,37 @@ const editTick = async (
 };
 
 /**
+ * Retrieves summations on ticks.
+ *
+ * @param {string | undefined} user Unique identifier of user to fetch summations of.
+ * @returns {Promise<Response<TickSummations>>} Tick details
+ */
+const getTickSummations = async (user = undefined as string | undefined): Promise<Response<TickSummations>> => {
+  let response;
+  let message;
+
+  try {
+    response = await getRequest().get(`/ticks/summations?${optionalQueryParams({ user })}`);
+  } catch (error: unknown) {
+    message = error;
+  }
+
+  if (response && response.status === 200) {
+    return {
+      summations: response.data.summations as TickSummations,
+      status: 200,
+      error: `${message}`,
+    };
+  }
+
+  return {
+    summations: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
+};
+
+/**
  * Retrieves a tick.
  *
  * @param {string} id Unique identifier for an tick.
@@ -319,6 +346,7 @@ export default {
   createTick,
   deleteTick,
   editTick,
+  getTickSummations,
   getTick,
   getTicks,
 };

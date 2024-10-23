@@ -11,6 +11,7 @@ import {
   Response,
   ClimbingGrade,
   Session,
+  SessionSummations,
 } from '../types';
 
 /**
@@ -224,6 +225,37 @@ const editSession = async (
 };
 
 /**
+ * Retrieves summations on sessions.
+ *
+ * @param {string | undefined} user Unique identifier of user to fetch summations of.
+ * @returns {Promise<Response<SessionSummations>>} Session details
+ */
+const getSessionSummations = async (user = undefined as string | undefined): Promise<Response<SessionSummations>> => {
+  let response;
+  let message;
+
+  try {
+    response = await getRequest().get(`/sessions/summations?${optionalQueryParams({ user })}`);
+  } catch (error: unknown) {
+    message = error;
+  }
+
+  if (response && response.status === 200) {
+    return {
+      summations: response.data.summations as SessionSummations,
+      status: 200,
+      error: `${message}`,
+    };
+  }
+
+  return {
+    summations: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
+};
+
+/**
  * Retrieves a session.
  *
  * @param {string} id Unique identifier for an session.
@@ -337,6 +369,7 @@ export default {
   createSession,
   deleteSession,
   editSession,
+  getSessionSummations,
   getSession,
   getSessions,
 };

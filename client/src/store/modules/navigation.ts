@@ -190,6 +190,33 @@ const actions: ActionTree<NavigationState, RootState> = {
       dispatch('goTo404');
     }
   },
+
+  /**
+   * Routes the user to a profile page.
+   *
+   * @param {ActionContext<NavigationState, RootState>} context Vuex action context.
+   */
+  goToMyProfile({
+    dispatch,
+    rootGetters,
+    state,
+  }): void {
+    try {
+      if (!rootGetters['user/isLoggedIn']) {
+        dispatch('goTo404');
+        return;
+      }
+
+      const { id } = rootGetters['user/getUser'];
+
+      if (state.currentPage !== PAGE_NAME.PROFILE
+        || ('id' in state.params && state.params.id !== id)) {
+        router.push(`/profile/${id}`);
+      }
+    } catch (error) {
+      dispatch('goTo404');
+    }
+  },
 };
 
 // Module

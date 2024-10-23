@@ -33,6 +33,10 @@
     :value="value"
     :variant="variant"
     :width="width"
+    :xSmall="size === 'xSmall'"
+    :small="size === 'small'"
+    :large="size === 'large'"
+    :xLarge="size === 'x-large'"
     @click="handleClick">
     <slot />
   </v-btn>

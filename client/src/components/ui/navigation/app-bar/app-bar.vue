@@ -19,19 +19,28 @@
 
     <v-spacer />
 
-    <c-button
+    <v-btn
       v-if="!getUser"
-      :outlined="true"
+      text
       @click="openLoginDialog">
       Login
-    </c-button>
+    </v-btn>
 
-    <c-button
+    <v-btn
       v-if="getUser"
-      :outlined="true"
-      @click="openLoginDialog">
-      Log Tick
-    </c-button>
+      icon
+      small>
+      <v-icon>
+        mdi-plus
+      </v-icon>
+    </v-btn>
+
+    <v-btn
+      v-if="getUser"
+      text
+      @click="goToMyProfile">
+      {{ getUsername }}
+    </v-btn>
   </v-app-bar>
 </template>
 
@@ -43,15 +52,8 @@ import {
 } from 'vuex';
 import Vue from 'vue';
 
-// Local Imports
-import CButton from '../../form/button/button.vue';
-
 export default Vue.extend({
   name: 'app-bar',
-
-  components: {
-    CButton,
-  },
 
   computed: {
     ...mapGetters('resize', [
@@ -62,12 +64,17 @@ export default Vue.extend({
 
     ...mapGetters('user', [
       'getUser',
+      'getUsername',
     ]),
   },
 
   methods: {
     ...mapActions('user', [
       'openLoginDialog',
+    ]),
+
+    ...mapActions('navigation', [
+      'goToMyProfile',
     ]),
   },
 });
@@ -84,5 +91,14 @@ export default Vue.extend({
   margin-left: .4rem;
   text-transform: uppercase;
   letter-spacing: .1rem;
+}
+</style>
+
+<style lang="scss">
+.v-app-bar .v-toolbar__content {
+  max-width: 1200px;
+  width: calc(100% - 32px);
+  margin: 0 auto;
+  padding: 0;
 }
 </style>

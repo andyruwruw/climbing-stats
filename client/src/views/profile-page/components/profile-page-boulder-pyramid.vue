@@ -4,11 +4,13 @@
       :data="data"
       :height="data.length * 12"
       :id="id"
+      :sortOrder="V_SCALE_SIMPLE_GRADES"
       bin="status"
       domain="grade"
       domainLabel="Grade"
       range="ticks"
       rangeLabel="Unique Boulder Sends"
+      sort="grade"
       title="Boulder Sends by Grade" />
   </div>
 </template>
@@ -20,6 +22,7 @@ import Vue from 'vue';
 
 // Local Imports
 import { getSimplifiedBoulderTicksByGrade } from '../../../helpers/ticks';
+import { V_SCALE_SIMPLE_GRADES } from '../../../config/grades';
 import HorizontalBarPlot from '../../../components/ui/charts/bar-plot/horizontal-bar-plot.vue';
 
 // Types
@@ -51,6 +54,10 @@ export default Vue.extend({
       default: () => ({}),
     },
   },
+
+  data: () => ({
+    V_SCALE_SIMPLE_GRADES,
+  }),
 
   computed: {
     /**

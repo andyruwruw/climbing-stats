@@ -47,7 +47,7 @@ export default Vue.extend({
      */
     colorRange: {
       type: Array,
-      default: SIMULAR_CATEGORY_COLORS,
+      default: () => (SIMULAR_CATEGORY_COLORS),
     },
 
     /**
@@ -125,11 +125,21 @@ export default Vue.extend({
     /**
      * Sort method.
      *
-     * @type {number}
+     * @type {number | string}
      */
     sort: {
-      type: Number,
+      type: [Number, String],
       default: 0,
+    },
+
+    /**
+     * Order to sort items.
+     *
+     * @type {string[]}
+     */
+    sortOrder: {
+      type: Array,
+      default: () => ([]),
     },
 
     /**
@@ -184,11 +194,13 @@ export default Vue.extend({
      * Sorting parsing.
      */
     sortOptions(): Plot.SortOrder | Plot.ChannelDomainSort | undefined {
-      if (this.sort === 1) {
-        return { y: 'x' };
-      }
-      if (this.sort === -1) {
-        return { y: '-x' };
+      if (typeof this.sort === 'number') {
+        if (this.sort === 1) {
+          return { y: 'x' };
+        }
+        if (this.sort === -1) {
+          return { y: '-x' };
+        }
       }
       return undefined;
     },

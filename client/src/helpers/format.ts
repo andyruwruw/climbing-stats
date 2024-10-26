@@ -28,6 +28,29 @@ export const numberWithCommas = (value: number): string => (value.toString().rep
 export const dateString = (value: number): string => (moment(value).format('MMMM Do YYYY'));
 
 /**
+ * Formats a date to a string.
+ *
+ * @param {number} value Date value.
+ * @returns {string} Readable date string.
+ */
+export const dateStringSimple = (value: number): string => (moment(value).format('MM/DD/YY'));
+
+/**
+ * Formats a duration.
+ *
+ * @param {number} start Date value.
+ * @param {number} end Date value.
+ * @returns {string} Readable date string.
+ */
+export const durationString = (
+  start: number,
+  end: number,
+): string => {
+  const duration = moment(end).diff(moment(start));
+  return moment.utc(duration).format('HH:mm:ss');
+};
+
+/**
  * Figures out time between two dates.
  *
  * @param {number} start Starting date.

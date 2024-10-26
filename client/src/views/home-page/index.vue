@@ -11,7 +11,7 @@ import Vue from 'vue';
 
 // Local Imports
 import HomePageHeader from './components/home-page-header.vue';
-import PagePadding from '../../components/ui/layout/page-padding.vue';
+import PagePadding from '../../components/ui/layout/page-padding/page-padding.vue';
 
 export default Vue.extend({
   name: 'home-page',

@@ -7,10 +7,10 @@ import {
   ATTEMPT_STATUS,
   CLIMBING_ACTIVITY,
   CLIMBING_PROTECTION,
-  GRADING_SYSTEMS,
   ROCK_TYPES,
 } from '../config';
 import { AbstractDatabase } from '../database/abstract-database';
+import { GRADING_SYSTEMS } from '../config/grades';
 import { hashPassword } from './authorization';
 import { Environment } from './environment';
 import { CsvParser } from './csv-parser';

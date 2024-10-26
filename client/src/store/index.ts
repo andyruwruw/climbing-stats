@@ -8,11 +8,13 @@ import sessions from './modules/sessions';
 import resize from './modules/resize';
 import user from './modules/user';
 import ticks from './modules/ticks';
+import locations from './modules/locations';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
+    locations,
     navigation,
     resize,
     sessions,

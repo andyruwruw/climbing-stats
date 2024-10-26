@@ -3,13 +3,28 @@
     <div :class="$style.component">
       <profile-page-header :user="user" />
 
-      <profile-page-main-statistics
-        :ticks="ticks"
-        :sessions="sessions" />
+      <tab-selector
+        :items="tabs"
+        @change="handleTabChange" />
 
-      <profile-page-boulder-pyramid :ticks="ticks" />
+      <profile-overview
+        v-if="tab === 'overview'"
+        :tick-summations="tickSummations" />
 
-      <profile-page-boulder-attempts-pyramid :ticks="ticks" />
+      <profile-ticks
+        v-if="tab === 'ticks'"
+        :ticks="ticks" />
+
+      <profile-sessions
+        v-if="tab === 'sessions'"
+        :sessions="sessions"
+        @end="() => (retrieveSessions(sessions.length))" />
+
+      <profile-locations
+        v-if="tab === 'locations'" />
+
+      <profile-partners
+        v-if="tab === 'partners'" />
     </div>
   </page-padding>
 </template>
@@ -23,16 +38,25 @@ import {
 import Vue from 'vue';
 
 // Local Imports
-import ProfilePageMainStatistics from './components/profile-page-main-statistics.vue';
-import ProfilePageBoulderAttemptsPyramid from './components/profile-page-boulder-attempts-pyramid.vue';
-import ProfilePageBoulderPyramid from './components/profile-page-boulder-pyramid.vue';
+import {
+  PAGE_SIZE,
+  PROFILE_PAGE_TABS,
+} from '../../config';
+import ProfileOverview from './components/overview/profile-overview.vue';
+import ProfileTicks from './components/ticks/profile-ticks.vue';
+import ProfileSessions from './components/sessions/profile-sessions.vue';
+import ProfileLocations from './components/locations/profile-locations.vue';
+import ProfilePartners from './components/partners/profile-partners.vue';
 import ProfilePageHeader from './components/profile-page-header.vue';
-import PagePadding from '../../components/ui/layout/page-padding.vue';
+import TabSelector from '../../components/ui/layout/tab-selector/tab-selector.vue';
+import PagePadding from '../../components/ui/layout/page-padding/page-padding.vue';
 import api from '../../api';
 
 // Types
 import {
+  Session,
   SessionSummations,
+  Tick,
   TickSummations,
   User,
 } from '../../types';
@@ -41,11 +65,14 @@ export default Vue.extend({
   name: 'profile-page',
 
   components: {
+    TabSelector,
     PagePadding,
     ProfilePageHeader,
-    ProfilePageMainStatistics,
-    ProfilePageBoulderPyramid,
-    ProfilePageBoulderAttemptsPyramid,
+    ProfileOverview,
+    ProfileLocations,
+    ProfileTicks,
+    ProfileSessions,
+    ProfilePartners,
   },
 
   data: () => ({
@@ -55,19 +82,39 @@ export default Vue.extend({
     id: '',
 
     /**
-     * User data.
+     * User's sessions.
      */
-    user: null as User | null,
-
-    /**
-     * Tick stats.
-     */
-    ticks: null as TickSummations | null,
+    sessions: [] as Session[],
 
     /**
      * Session stats.
      */
-    sessions: null as SessionSummations | null,
+    sessionSummations: null as SessionSummations | null,
+
+    /**
+     * Profile page tab options.
+     */
+    tabs: PROFILE_PAGE_TABS,
+
+    /**
+     * Currently active tab.
+     */
+    tab: 'overview',
+
+    /**
+     * User's ticks.
+     */
+    ticks: [] as Tick[],
+
+    /**
+     * Tick stats.
+     */
+    tickSummations: null as TickSummations | null,
+
+    /**
+     * User data.
+     */
+    user: null as User | null,
   }),
 
   computed: {
@@ -81,12 +128,18 @@ export default Vue.extend({
 
     ...mapGetters(
       'ticks',
-      ['getTickSummations'],
+      [
+        'getTicks',
+        'getTickSummations',
+      ],
     ),
 
     ...mapGetters(
       'sessions',
-      ['getSessionSummations'],
+      [
+        'getSessions',
+        'getSessionSummations',
+      ],
     ),
   },
 
@@ -97,13 +150,20 @@ export default Vue.extend({
 
     this.retrieveUserData();
     this.retrieveSessionData();
+    this.retrieveSessions();
     this.retrieveTickData();
+    this.retrieveTicks();
   },
 
   methods: {
     ...mapActions(
       'navigation',
       ['handlePageLoad'],
+    ),
+
+    ...mapActions(
+      'locations',
+      ['getLocations'],
     ),
 
     /**
@@ -139,14 +199,59 @@ export default Vue.extend({
           && this.getTickSummations
           && 'tickList' in this.getTickSummations
           && Object.keys(this.getTickSummations.tickList).length) {
-          this.ticks = this.getTickSummations;
+          this.tickSummations = this.getTickSummations;
           return;
         }
 
         const response = await api.ticks.getTickSummations(this.id);
 
         if (response.status === 200) {
-          this.ticks = response.summations as TickSummations;
+          this.tickSummations = response.summations as TickSummations;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Retrieves list of ticks.
+     */
+    async retrieveTicks(offset = 0): Promise<void> {
+      try {
+        if (this.isLoggedIn
+          && this.getUser
+          && this.getUser.id === this.id
+          && this.getTicks) {
+          this.ticks = this.getTicks;
+          return;
+        }
+
+        const response = await api.ticks.getTicks(
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          offset,
+          PAGE_SIZE,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          this.id,
+        );
+
+        if (response.status === 200) {
+          if (this.ticks.length) {
+            this.ticks.push(...response.ticks as Tick[]);
+          } else {
+            this.ticks = response.ticks as Tick[];
+          }
         }
       } catch (error) {
         console.log(error);
@@ -162,18 +267,90 @@ export default Vue.extend({
           && this.getUser
           && this.getUser.id === this.id
           && this.getSessionSummations.start !== -1) {
-          this.sessions = this.getSessionSummations;
+          this.sessionSummations = this.getSessionSummations;
           return;
         }
 
         const response = await api.sessions.getSessionSummations(this.id);
 
         if (response.status === 200) {
-          this.sessions = response.summations as SessionSummations;
+          this.sessionSummations = response.summations as SessionSummations;
         }
       } catch (error) {
         console.log(error);
       }
+    },
+
+    /**
+     * Retrieves list of sessions.
+     */
+    async retrieveSessions(offset = 0): Promise<void> {
+      try {
+        if (this.isLoggedIn
+          && this.getUser
+          && this.getUser.id === this.id
+          && this.getSessions) {
+          if (this.sessions.length) {
+            this.sessions.push(...this.getSessions.slice(
+              offset,
+              offset + PAGE_SIZE,
+            ));
+          } else {
+            this.sessions = this.getSessions.slice(
+              offset,
+              offset + PAGE_SIZE,
+            );
+          }
+          return;
+        }
+
+        const response = await api.sessions.getSessions(
+          undefined,
+          undefined,
+          offset,
+          PAGE_SIZE,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          this.id,
+        );
+
+        if (response.status === 200) {
+          const locations = (response.sessions as Session[]).map((session: Session) => (session.location));
+
+          if (locations.length) {
+            this.getLocations({ ids: locations });
+          }
+
+          if (this.sessions.length) {
+            this.sessions.push(...response.sessions as Session[]);
+          } else {
+            this.sessions = response.sessions as Session[];
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    /**
+     * Handles a new tab change.
+     *
+     * @param {string} value New tab value.
+     */
+    handleTabChange(value: string): void {
+      if (value === this.tab) {
+        return;
+      }
+
+      this.tab = value;
     },
   },
 });

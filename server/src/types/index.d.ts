@@ -170,3 +170,46 @@ export interface ExternalHref {
    */
   instagram?: string;
 }
+
+/**
+ * What interval the chart covers.
+ */
+export type ChartInterval = 'all'
+| 'week'
+| 'month'
+| 'quarter'
+| 'year';
+
+/**
+ * What cluster the chart entries represent.
+ */
+export type ChartPeriod = 'daily'
+| 'few-days'
+| 'weekly'
+| 'monthly'
+| 'yearly'
+
+/**
+ * One timeline entry.
+ */
+export interface TimelineEntry {
+  /**
+   * Date of the timeline entry.
+   */
+  date?: number;
+}
+
+/**
+ * Timeline entries when standing in for session quantity.
+ */
+export interface SessionTimelineEntry extends TimelineEntry {
+  /**
+   * Number of hours.
+   */
+  hours: number;
+
+  /**
+   * Number of sessions.
+   */
+  sessions: number;
+}

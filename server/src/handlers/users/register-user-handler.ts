@@ -1,7 +1,6 @@
 // Local Imports
 import {
   AUTHORIZATION_TYPE,
-  GRADING_SYSTEMS,
   PROFILE_PRIVACY,
   REQUEST_TYPE,
   USER_GENDER,
@@ -18,6 +17,7 @@ import {
 } from '../../helpers/authorization';
 import { AbstractHandler } from '../abstract-handler';
 import { Monitor } from '../../helpers/monitor';
+import { GRADING_SYSTEMS } from '../../config/grades';
 
 // Types
 import {

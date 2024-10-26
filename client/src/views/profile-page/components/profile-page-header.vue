@@ -22,7 +22,7 @@
 import Vue from 'vue';
 
 // Local Imports
-import DashboardCard from '../../../components/ui/dashboard/card/dashboard-card.vue';
+import DashboardCard from '../../../components/ui/dashboard/dashboard-card/dashboard-card.vue';
 import ItemHrefs from '../../../components/ui/generic/item-hrefs/item-hrefs.vue';
 import CoverImage from '../../../components/ui/generic/cover-image/cover-image.vue';
 

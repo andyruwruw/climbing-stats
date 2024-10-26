@@ -19,7 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 
 // Local Imports
-import DashboardCard from '../../dashboard/card/dashboard-card.vue';
+import DashboardCard from '../../dashboard/dashboard-card/dashboard-card.vue';
 
 /**
  * Wrapper around Observable plot.

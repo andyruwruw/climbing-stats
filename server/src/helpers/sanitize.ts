@@ -1,17 +1,26 @@
 // Local Imports
-import { ClimbingGrade, GradingSystem } from '@/types/climbs';
 import {
   ATTEMPT_STATUS,
-  CLIMBING_GRADES,
   CLIMBING_PROTECTION,
-  GRADING_SYSTEMS,
 } from '../config';
+import {
+  CLIMBING_GRADES,
+  FONT_BOULDER_GRADES,
+  FRENCH_ROUTE_GRADES,
+  GRADING_SYSTEMS,
+  V_SCALE_GRADES,
+  YOSEMITE_DECIMAL_SYSTEM_ROUTE_GRADES,
+} from '../config/grades';
 
 // Types
 import {
   AttemptStatus,
   Protection,
 } from '../types/attempts';
+import {
+  ClimbingGrade,
+  GradingSystem,
+} from '../types/climbs';
 
 // Regex.
 const IS_AUDIO = /\.(?:wav|mp3)$/i;
@@ -233,4 +242,43 @@ export const gradeToDifficultyIndex = (
     }
   }
   return 0;
+}
+
+/**
+ * Converts a grade to a different system.
+ *
+ * @param {ClimbingGrade} grade Climbing grade to convert.
+ * @param {GradingSystem} system Grading system to convert it to. 
+ */
+export const convertGrade = (
+  grade: ClimbingGrade,
+  system: GradingSystem,
+): ClimbingGrade => {
+  // If it already is the grading system.
+  if ((system === GRADING_SYSTEMS.FRENCH
+    && FRENCH_ROUTE_GRADES.includes(grade))
+    || (system === GRADING_SYSTEMS.YOSEMITE_DECIMAL_SYSTEM
+    && YOSEMITE_DECIMAL_SYSTEM_ROUTE_GRADES.includes(grade))
+    || (system === GRADING_SYSTEMS.FONT
+    && FONT_BOULDER_GRADES.includes(grade))
+    || (system === GRADING_SYSTEMS.V_SCALE
+    && V_SCALE_GRADES.includes(grade))) {
+    return grade;
+  }
+
+  let index = gradeToDifficultyIndex(grade);
+
+  while (index >= 0 || CLIMBING_GRADES[index]) {
+    if (system in CLIMBING_GRADES[index]) {
+      return CLIMBING_GRADES[index][system];
+    }
+
+    if (index === 0) {
+      return '?';
+    }
+
+    index -= 1;
+  }
+
+  return '?';
 }

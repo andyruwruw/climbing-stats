@@ -8,6 +8,7 @@ import express, {
 import {
   AreaRoutes,
   LocationRoutes,
+  PartnerRoutes,
   RockRoutes,
   RouteRoutes,
   SessionRoutes,
@@ -63,6 +64,7 @@ export class Server {
 
     AreaRoutes.apply(Server._app);
     LocationRoutes.apply(Server._app);
+    PartnerRoutes.apply(Server._app);
     RockRoutes.apply(Server._app);
     RouteRoutes.apply(Server._app);
     SessionRoutes.apply(Server._app);

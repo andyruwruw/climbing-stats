@@ -20,9 +20,9 @@ import {
 import { QueryUpdate } from '../../types/database';
 
 /**
- * Edits an existing rock.
+ * Edits an existing partner.
  */
-export class EditRockHandler extends AbstractHandler {
+export class EditPartnerHandler extends AbstractHandler {
   /**
    * Instantiates a new handler.
    */
@@ -52,7 +52,7 @@ export class EditRockHandler extends AbstractHandler {
       if (!id) {
         res.status(400).send({
           error: MESSAGE_HANDLER_PARAMETER_MISSING(
-            'rock',
+            'partner',
             'ID',
           ),
         });
@@ -185,7 +185,7 @@ export class EditRockHandler extends AbstractHandler {
       });
     } catch (error) {
       Monitor.log(
-        EditRockHandler,
+        EditPartnerHandler,
         `${error}`,
         Monitor.Layer.WARNING,
       );

@@ -21,12 +21,12 @@ import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 
 // Local Imports
-import { getSimplifiedBoulderTicksByGrade } from '../../../helpers/ticks';
-import { V_SCALE_SIMPLE_GRADES } from '../../../config/grades';
-import HorizontalBarPlot from '../../../components/ui/charts/bar-plot/horizontal-bar-plot.vue';
+import { getSimplifiedBoulderTicksByGrade } from '../../../../helpers/ticks';
+import { V_SCALE_SIMPLE_GRADES } from '../../../../config/grades';
+import HorizontalBarPlot from '../../../../components/ui/charts/bar-plot/horizontal-bar-plot.vue';
 
 // Types
-import { Dictionary } from '../../../types';
+import { Dictionary } from '../../../../types';
 
 export default Vue.extend({
   name: 'profile-page-boulder-pyramid',

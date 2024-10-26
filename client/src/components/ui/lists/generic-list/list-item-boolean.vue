@@ -46,8 +46,11 @@ export default Vue.extend({
 }
 
 .boolean {
-}
+  text-transform: capitalize;
+  color: white;
 
-.active {
+  &.active {
+    color: greenyellow;
+  }
 }
 </style>

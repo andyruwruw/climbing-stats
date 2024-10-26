@@ -59,8 +59,32 @@ export default Vue.extend({
 
 <style lang="scss" module>
 .component {
+  --index: 0;
+
+  border-radius: 6px;
+  border: .8px solid #2c2927;
+  background: #1B1918;
+  height: 56px;
+  border-spacing: 0px;
+  transition: all .2s ease;
+
+  &:hover {
+    background: #201e1d;
+  }
+
+  span {
+    font-size: 14px;
+    padding: 8px 0;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
 }
 
 .index {
+  width: 16px;
+  color: white;
+  padding-right: 12px;
 }
 </style>

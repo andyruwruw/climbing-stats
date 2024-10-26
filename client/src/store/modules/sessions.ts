@@ -92,7 +92,10 @@ const mutations: MutationTree<SessionsState> = {
     state: SessionsState,
     sessions: Session[],
   ): void {
-    state.sessions = sessions;
+    state.sessions = sessions.sort((
+      a: Session,
+      b: Session,
+    ): number => ((b.date + b.start) - (a.date + a.start)));
   },
 
   /**
@@ -108,6 +111,11 @@ const mutations: MutationTree<SessionsState> = {
     for (let i = 0; i < sessions.length; i += 1) {
       state.sessions.push(sessions[i]);
     }
+
+    state.sessions.sort((
+      a: Session,
+      b: Session,
+    ): number => ((b.date + b.start) - (a.date + a.start)));
   },
 
   /**
@@ -268,6 +276,16 @@ const actions: ActionTree<SessionsState, RootState> = {
       );
 
       if (response && response.status === 200) {
+        const locations = (response.sessions as Session[]).map((session: Session) => (session.location));
+
+        if (locations.length) {
+          dispatch(
+            'locations/getLocations',
+            { ids: locations },
+            { root: true },
+          );
+        }
+
         commit(
           'addSessions',
           response.sessions,

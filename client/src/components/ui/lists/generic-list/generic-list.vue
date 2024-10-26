@@ -2,7 +2,7 @@
   <div :class="$style.component">
     <table :class="$style.table">
       <tbody>
-        <tr :class="$style.header">
+        <tr>
           <th v-if="rank" />
 
           <th
@@ -83,11 +83,32 @@ export default Vue.extend({
 
 <style lang="scss" module>
 .component {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
-.list {
-}
+.table {
+  color: white;
+  width: 100%;
+  border-spacing: 0 12px;
+  border-collapse: separate;
 
-.header {
+  th {
+    font-size: 12px;
+    color: white;
+    opacity: .8;
+    font-weight: 300;
+    text-align: left;
+  }
+
+  td {
+    border: 0;
+    padding: 8px 32px 8px 0;
+  }
+
+  td:first-of-type {
+    padding-left: 18px;
+  }
 }
 </style>

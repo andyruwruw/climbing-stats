@@ -20,11 +20,11 @@ import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 
 // Local Imports
-import { getSimplifiedBoulderAttemptsByGrade } from '../../../helpers/ticks';
-import HorizontalBarPlot from '../../../components/ui/charts/bar-plot/horizontal-bar-plot.vue';
+import { getSimplifiedBoulderAttemptsByGrade } from '../../../../helpers/ticks';
+import HorizontalBarPlot from '../../../../components/ui/charts/bar-plot/horizontal-bar-plot.vue';
 
 // Types
-import { Dictionary } from '../../../types';
+import { Dictionary } from '../../../../types';
 
 export default Vue.extend({
   name: 'profile-page-boulder-attempts-pyramid',

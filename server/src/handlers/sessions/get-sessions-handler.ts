@@ -154,7 +154,7 @@ export class GetSessionsHandler extends AbstractHandler {
         query,
         {},
         {
-          start: -1,
+          date: -1,
         },
         sanitizeNumber(
           `${offset}`,

@@ -1,4 +1,5 @@
 // Types
+import { Dictionary } from '.';
 import { ClimbingActivities, ClimbingGrade } from './climbs';
 import { DatabaseRow } from './database';
 
@@ -98,16 +99,31 @@ export interface Tick extends DatabaseRow {
 }
 
 /**
- * Tracks routes for max leaderboards.
+ * Tracks routes ticks.
  */
-export interface RouteMaxTracker {
+export interface TickTracker {
   /**
-   * Unique identifier of the route.
+   * Grade this entry is for.
    */
-  id: string;
+  grade: ClimbingGrade | Dictionary<ClimbingGrade>;
 
   /**
-   * Grade of the climb.
+   * Tick unique identifiers for attempts on this grade.
    */
-  grade: ClimbingGrade;
+  attempts: string[];
+
+  /**
+   * Route unique identifiers of unique climbs sent.
+   */
+  ticks: string[];
+
+  /**
+   * Route unique identifiers of unique climbs flashed.
+   */
+  flashes: string[];
+
+  /**
+   * Route unique identifiers of unique climbs onsight.
+   */
+  onsights: string[];
 }

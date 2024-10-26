@@ -2,6 +2,7 @@
 import {
   ClimbingActivities,
   Dictionary,
+  Location,
   RouterPageName,
   Session,
   SessionCounter,
@@ -216,4 +217,19 @@ export interface TicksState extends Record<string, any> {
    * Logs of session counters for each route.
    */
   routeSessions: Dictionary<SessionCounter>,
+}
+
+/**
+ * Tracks locations.
+ */
+export interface LocationsState extends Record<string, any> {
+  /**
+   * List of locations.
+   */
+  locations: Location[];
+
+  /**
+   * How those locations map.
+   */
+  map: Dictionary<number>;
 }

@@ -7,11 +7,13 @@ import {
 
 // Types
 import {
-  Area,
-  ClimbingActivities,
   ExternalHref,
   Response,
 } from '../types';
+import {
+  Area,
+  ClimbingActivities,
+} from '../types/climbs';
 
 /**
  * Create a new area.

@@ -9,10 +9,12 @@ import { ROCK_TYPES } from '../config';
 // Types
 import {
   ClimbingActivities,
-  ExternalHref,
   Rock,
-  Response,
   RockType,
+} from '../types/climbs';
+import {
+  ExternalHref,
+  Response,
 } from '../types';
 
 /**

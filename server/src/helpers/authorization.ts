@@ -256,6 +256,8 @@ export const cleanUser = (user: User): PublicUser => ({
   partnersPrivacy: user.partnersPrivacy,
   pyramidPrivacy: user.pyramidPrivacy,
   mapPrivacy: user.mapPrivacy,
+  boulderingGrades: user.boulderingGrades,
+  routeGrades: user.routeGrades,
 });
 
 /**

@@ -1,12 +1,15 @@
 // Types
-import { RetrievalStatus } from '@/types/state';
 import {
-  ClimbingActivities,
+  ChartInterval,
+  ChartPeriod,
   Dictionary,
-  Protection,
-  RockType,
-  RouterPageName,
 } from '../types';
+import {
+  RockType,
+  ClimbingActivities,
+} from '../types/climbs';
+import { RetrievalStatus } from '../types/state';
+import { Protection } from '../types/attempts';
 
 /**
  * Backend URL.
@@ -70,7 +73,7 @@ export const CLIMBING_PROTECTION = {
  * @enum
  * @constant
  */
-export const PAGE_NAME: Dictionary<RouterPageName> = {
+export const PAGE_NAME: Dictionary<string> = {
   /**
    * Landing page name.
    */
@@ -484,3 +487,24 @@ export const LIST_ITEM_CATEGORICAL_STATE_OPTIONS = [
     color: '#8AD3D9',
   },
 ] as Dictionary<string>[];
+
+/**
+ * Intervals for data.
+ */
+export const CHART_INTERVAL = {
+  ALL: 'all',
+  WEEK: 'week',
+  QUARTER: 'quarter',
+  YEAR: 'year',
+} as Dictionary<ChartInterval>;
+
+/**
+ * Period between chart entries.
+ */
+export const CHART_PERIOD = {
+  DAILY: 'daily',
+  FEW_DAYS: 'few-days',
+  WEEKLY: 'weekly',
+  MONTHLY: 'monthly',
+  YEARLY: 'yearly',
+} as Dictionary<ChartPeriod>;

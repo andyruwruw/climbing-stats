@@ -22,7 +22,7 @@ import {
 import {
   Session,
   SessionSummations,
-} from '../../types';
+} from '../../types/sessions';
 
 // Default state
 const defaultState = (): SessionsState => ({

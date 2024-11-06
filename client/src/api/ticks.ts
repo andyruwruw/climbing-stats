@@ -5,35 +5,40 @@ import {
   getRequest,
 } from './request';
 import {
+  CHART_INTERVAL,
   CLIMBING_ACTIVITY,
   CLIMBING_PROTECTION,
 } from '../config';
 
 // Types
 import {
-  ClimbingActivities,
-  Response,
-  ClimbingGrade,
-  AttemptStatus,
   Tick,
-  Protection,
   TickSummations,
-} from '../types';
+  AttemptStatus,
+  Protection,
+  TickPyramidEntry,
+} from '../types/attempts';
+import {
+  ClimbingActivities,
+  ClimbingGrade,
+  GradingSystem,
+} from '../types/climbs';
+import { Response } from '../types';
 
 /**
  * Create a new tick.
  *
  * @param {string} route Route the tick is for.
  * @param {AttemptStatus} status Status of send.
- * @param {ClimbingActivities} type Type of climbing activity.
- * @param {boolean} sent Whether this counts for the user as a send.
- * @param {Protection} protection Type of protection used.
- * @param {number} date Date of attempt.
- * @param {string} description Private notes on attempt.
- * @param {number} attempts Number of attempts on route about.
- * @param {number} laps Number of laps on route about.
- * @param {boolean} feature Whether to feature this climb.
- * @param {ClimbingGrade} grade Rough user assigned grade on route.
+ * @param {ClimbingActivities} [type = 'boulder'] Type of climbing activity.
+ * @param {boolean} [sent = true] Whether this counts for the user as a send.
+ * @param {Protection} [protection = 'pads'] Type of protection used.
+ * @param {number} [date = Date.now()] Date of attempt.
+ * @param {string} [description = ''] Private notes on attempt.
+ * @param {number} [attempts = 0] Number of attempts on route about.
+ * @param {number} [laps = 0] Number of laps on route about.
+ * @param {boolean} [feature = false] Whether to feature this climb.
+ * @param {ClimbingGrade} [grade = ''] Rough user assigned grade on route.
  * @returns {Promise<Response<Tick>>} The new tick if created successfully.
  */
 const createTick = async (
@@ -227,6 +232,56 @@ const getTickSummations = async (user = undefined as string | undefined): Promis
 };
 
 /**
+ * Retrieves tick pyramid.
+ *
+ * @param {string | undefined} [user = undefined] Unique identifier of user to fetch summations of.
+ * @param {ChartInterval} [interval = 'all'] Interval of chart data.
+ * @param {number} [start = -1] When to begin gathering data.
+ * @param {ClimbingActivities | undefined} [activity = undefined] Lock it into one activity or comma separated.
+ * @param {string | undefined} [location = undefined] Limit it to a location.
+ * @param {GradingSystem | undefined} [gradingSystem = undefined] Specify a grading system.
+ * @returns {Promise<Response<TickPyramidEntry[]>>} Tick details
+ */
+const getTickPyramid = async (
+  user = undefined as string | undefined,
+  interval = CHART_INTERVAL.ALL,
+  start = -1,
+  activity = undefined as ClimbingActivities | ClimbingActivities[] | undefined,
+  location = undefined as string | undefined,
+  gradingSystem = undefined as GradingSystem | undefined,
+): Promise<Response<TickPyramidEntry[]>> => {
+  let response;
+  let message;
+
+  try {
+    response = await getRequest().get(`/ticks/pyramid?${optionalQueryParams({
+      user,
+      interval,
+      start,
+      activity,
+      location,
+      gradingSystem,
+    })}`);
+  } catch (error: unknown) {
+    message = error;
+  }
+
+  if (response && response.status === 200) {
+    return {
+      pyramid: response.data.pyramid as TickPyramidEntry[],
+      status: 200,
+      error: `${message}`,
+    };
+  }
+
+  return {
+    pyramid: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
+};
+
+/**
  * Retrieves a tick.
  *
  * @param {string} id Unique identifier for an tick.
@@ -347,6 +402,7 @@ export default {
   deleteTick,
   editTick,
   getTickSummations,
+  getTickPyramid,
   getTick,
   getTicks,
 };

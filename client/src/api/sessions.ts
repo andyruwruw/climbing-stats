@@ -4,15 +4,18 @@ import {
   optionalRequestBody,
   getRequest,
 } from './request';
+import { CHART_PERIOD } from '../config';
 
 // Types
 import {
-  ClimbingActivities,
-  Response,
-  ClimbingGrade,
   Session,
   SessionSummations,
-} from '../types';
+} from '../types/sessions';
+import {
+  ClimbingActivities,
+  ClimbingGrade,
+} from '../types/climbs';
+import { Response } from '../types';
 
 /**
  * Create a new session.
@@ -256,6 +259,47 @@ const getSessionSummations = async (user = undefined as string | undefined): Pro
 };
 
 /**
+ * Retrieves timeline about session data.
+ *
+ * @param {string | undefined} user Unique identifier of user to fetch timeline of.
+ * @returns {Promise<Response<SessionSummations>>} Session details
+ */
+const getSessionTimeline = async (
+  user = undefined as string | undefined,
+  interval = 'all',
+  start = '-1',
+  period = CHART_PERIOD.FEW_DAYS,
+  outdoors = '',
+  activity = '',
+  partner = '',
+  byPartner = 'false',
+  byLocation = 'false',
+): Promise<Response<SessionSummations>> => {
+  let response;
+  let message;
+
+  try {
+    response = await getRequest().get(`/sessions/timeline?${optionalQueryParams({ user })}`);
+  } catch (error: unknown) {
+    message = error;
+  }
+
+  if (response && response.status === 200) {
+    return {
+      timeline: response.data.timeline as SessionSummations,
+      status: 200,
+      error: `${message}`,
+    };
+  }
+
+  return {
+    timeline: null,
+    status: response ? response.status : 500,
+    error: `${message}`,
+  };
+};
+
+/**
  * Retrieves a session.
  *
  * @param {string} id Unique identifier for an session.
@@ -370,6 +414,7 @@ export default {
   deleteSession,
   editSession,
   getSessionSummations,
+  getSessionTimeline,
   getSession,
   getSessions,
 };

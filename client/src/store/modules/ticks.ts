@@ -15,18 +15,18 @@ import api from '../../api';
 
 // Types
 import {
-  ClimbingActivities,
-  Dictionary,
-  SessionCounter,
   Tick,
   TickSummations,
   TickTracker,
-} from '../../types';
+} from '../../types/attempts';
 import {
   TicksState,
   RootState,
   RetrievalStatus,
 } from '../../types/state';
+import { ClimbingActivities } from '../../types/climbs';
+import { SessionCounter } from '../../types/sessions';
+import { Dictionary } from '../../types';
 
 // Default state
 const defaultState = (): TicksState => ({

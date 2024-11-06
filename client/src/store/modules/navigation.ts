@@ -12,13 +12,10 @@ import router from '../../router';
 
 // Types
 import {
-  Dictionary,
-  RouterPageName,
-} from '../../types';
-import {
   NavigationState,
   RootState,
 } from '../../types/state';
+import { Dictionary } from '../../types';
 
 /**
  * Navigation module.
@@ -33,7 +30,7 @@ import {
  * @returns {NavigationState} Default state.
  */
 export const defaultState = (): NavigationState => ({
-  currentPage: '' as RouterPageName,
+  currentPage: '' as string,
 
   params: {} as Dictionary<any>,
 });

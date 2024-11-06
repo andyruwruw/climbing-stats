@@ -5,15 +5,15 @@ import {
   parseGrade,
   simplifyGrade,
 } from './grades';
+import { filterUnique } from '.';
 
 // Types
 import {
-  ClimbingGrade,
-  Dictionary,
   TickSummations,
   TickTracker,
-} from '../types';
-import { filterUnique } from '.';
+} from '../types/attempts';
+import { ClimbingGrade } from '../types/climbs';
+import { Dictionary } from '../types';
 
 /**
  * Whether ticks are incomplete.

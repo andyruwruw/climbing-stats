@@ -22,7 +22,7 @@ export type Privacy = 'private'
 /**
  * Publically facing user data.
  */
-export interface PublicUser extends DatabaseRow {
+export interface User extends DatabaseRow {
   /**
    * User's username.
    */
@@ -135,20 +135,10 @@ export interface PublicUser extends DatabaseRow {
 }
 
 /**
- * User object.
- */
-export interface User extends PublicUser {
-  /**
-   * User password hashed.
-   */
-  password: string;
-}
-
-/**
  * Someone you climb with.
  */
 export interface ClimbingPartner extends DatabaseRow {
-  /***
+  /**
    * User this climbing partner climbs with.
    */
   user: string;
@@ -237,36 +227,6 @@ export interface ClimbingPartner extends DatabaseRow {
    * Whether to hide this person's name.
    */
   hide: boolean;
-}
-
-/**
- * Login session.
- */
-export interface Token extends DatabaseRow {
-  /**
-   * User unique identifier.
-   */
-  user: string;
-
-  /**
-   * JSON web token.
-   */
-  token: string;
-
-  /**
-   * When this session was created.
-   */
-  created: number;
-}
-
-/**
- * Authorization token data.
- */
-export interface TokenData {
-  /**
-   * User ID.
-   */
-  id: string;
 }
 
 /**

@@ -4,6 +4,7 @@ import {
   AUTHORIZATION_TYPE,
   CHART_INTERVAL,
   CHART_INTERVAL_LENGTH,
+  PROFILE_PRIVACY,
   REQUEST_TYPE,
 } from '../../config';
 import {
@@ -24,23 +25,28 @@ import {
   ServerResponse,
 } from '../../types';
 import {
+  ClimbingActivities,
   GradingSystem,
   Route,
 } from '../../types/climbs';
+import {
+  AttemptStatus,
+  Tick,
+  TickPyramidEntry,
+} from '../../types/attempts';
 import { QueryConditions } from '../../types/database';
-import { Tick } from '../../types/attempts';
 
 /**
  * Retrieve information on a user's ticks.
  */
-export class GetTickSummationsHandler extends AbstractHandler {
+export class GetTickPyramidHandler extends AbstractHandler {
   /**
    * Instantiates a new handler.
    */
   constructor() {
     super(
       REQUEST_TYPE.GET,
-      '/summations',
+      '/pyramid',
       AUTHORIZATION_TYPE.OPTIONAL,
     );
   }
@@ -76,6 +82,7 @@ export class GetTickSummationsHandler extends AbstractHandler {
         res.status(200).send({
           pyramid: [],
         });
+        return;
       }
       if (activity.length) {
         if (`${activity}`.includes(',')) {
@@ -115,10 +122,11 @@ export class GetTickSummationsHandler extends AbstractHandler {
       if ((!req.user || query.user !== req.user) && !isAdmin) {
         const owner = await AbstractHandler._database.users.findById(query.user);
 
-        if (!owner || owner.profilePrivacy) {
+        if (!owner || owner.profilePrivacy === PROFILE_PRIVACY.PRIVATE) {
           res.status(200).send({
             pyramid: [],
           });
+          return;
         }
       }
 
@@ -147,6 +155,7 @@ export class GetTickSummationsHandler extends AbstractHandler {
       }
 
       const pyramid = [];
+      const system = (`${gradingSystem}` as GradingSystem).length ? (`${gradingSystem}` as GradingSystem) : undefined;
 
       for (let i = 0; i < ticks.length; i += 1) {
         const tick = ticks[i];
@@ -157,7 +166,7 @@ export class GetTickSummationsHandler extends AbstractHandler {
           ATTEMPT_STATUS.FLASH,
           ATTEMPT_STATUS.SEND,
           ATTEMPT_STATUS.DAY_FLASH,
-          ATTEMPT_STATUS.ONSIGHT
+          ATTEMPT_STATUS.ONSIGHT,
         ].includes(tick.status)) {
           continue;
         }
@@ -165,21 +174,26 @@ export class GetTickSummationsHandler extends AbstractHandler {
         const grade = simplifyGrade(
           convertGrade(
             parseGrade(tick.grade),
-            `${gradingSystem}` as GradingSystem,
+            system,
           ),
-          `${gradingSystem}` as GradingSystem,
+          system,
         );
 
-        const index = gradeToSimplifiedDifficultyIndex(grade);
+        const index = gradeToSimplifiedDifficultyIndex(
+          grade,
+          system,
+        );
 
         while (pyramid.length < index + 1) {
           pyramid.push({
             grade: getGradeAtSimpleIndex(pyramid.length),
-            activities: {},
-          });
+            activities: {} as Record<ClimbingActivities, Record<AttemptStatus, number>>,
+          } as TickPyramidEntry);
         }
 
-        if (!(tick.type in pyramid[i].activities)) {
+        console.log(index, pyramid.length);
+
+        if (!(tick.type in pyramid[index].activities)) {
           pyramid[i].activities[tick.type] = {
             attempt: 0,
             hung: 0,
@@ -190,7 +204,7 @@ export class GetTickSummationsHandler extends AbstractHandler {
           };
         }
 
-        pyramid[i].activities[tick.type][tick.status] += 1;
+        pyramid[index].activities[tick.type][tick.status] += 1;
       }
 
       res.status(200).send({
@@ -198,7 +212,7 @@ export class GetTickSummationsHandler extends AbstractHandler {
       });
     } catch (error) {
       Monitor.log(
-        GetTickSummationsHandler,
+        GetTickPyramidHandler,
         `${error}`,
         Monitor.Layer.WARNING,
       );

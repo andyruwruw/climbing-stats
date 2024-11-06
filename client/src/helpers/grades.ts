@@ -15,9 +15,9 @@ import {
 // Types
 import {
   ClimbingGrade,
-  Dictionary,
   GradingSystem,
-} from '../types';
+} from '../types/climbs';
+import { Dictionary } from '../types';
 
 /**
  * Whether a value is a grading system.

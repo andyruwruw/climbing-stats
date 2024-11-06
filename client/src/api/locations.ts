@@ -7,11 +7,13 @@ import {
 
 // Types
 import {
-  ClimbingActivities,
   ExternalHref,
-  Location,
   Response,
 } from '../types';
+import {
+  ClimbingActivities,
+  Location,
+} from '../types/climbs';
 
 /**
  * Create a new location.

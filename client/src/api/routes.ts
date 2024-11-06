@@ -9,13 +9,15 @@ import { CLIMBING_ACTIVITY } from '../config';
 // Types
 import {
   ClimbingActivities,
-  ExternalHref,
   GradeSuggestions,
-  Response,
   DangerSuggestions,
   Route,
   ClimbingGrade,
   RouteDanger,
+} from '../types/climbs';
+import {
+  ExternalHref,
+  Response,
 } from '../types';
 
 /**

@@ -9,7 +9,7 @@ import { Dictionary } from '.';
 /**
  * Tick status.
  */
-type AttemptStatus = 'attempt'
+export type AttemptStatus = 'attempt'
 | 'hung'
 | 'flash'
 | 'send'
@@ -22,7 +22,7 @@ type AttemptStatus = 'attempt'
 /**
  * Protection types.
  */
-type Protection = 'pads'
+export type Protection = 'pads'
 | 'bolts'
 | 'top-rope'
 | 'traditional'
@@ -74,7 +74,7 @@ export interface Tick extends DatabaseRow {
    * Description of the attempt.
    */
   description: string;
-  
+
   /**
    * Attempts made.
    */
@@ -144,4 +144,74 @@ export interface TickPyramidEntry {
    * Ticks per status per activity.
    */
   activities: Record<ClimbingActivities, Record<AttemptStatus, number>>;
+}
+
+/**
+ * Counts sessions on projects.
+ */
+export interface SessionCounter {
+  /**
+   * Unique identifier of the route.
+   */
+  id: string,
+
+  /**
+   * First session date on the route.
+   */
+  first: number,
+
+  /**
+   * Last session date on the route.
+   */
+  last: number,
+
+  /**
+   * Total number of sessions on the route.
+   */
+  total: number,
+}
+
+/**
+ * Overall tick data.
+ */
+export interface TickSummations {
+  /**
+   * Total number of unique climbs attempted.
+   */
+  uniqueClimbs: number;
+
+  /**
+   * Total climbs attempted.
+   */
+  totalClimbs: number;
+
+  /**
+   * Total number of unique boulders attempted.
+   */
+  uniqueBoulder: number;
+
+  /**
+   * Total boulders attempted.
+   */
+  totalBoulders: number;
+
+  /**
+   * Total number of unique routes attempted.
+   */
+  uniqueRoutes: number;
+
+  /**
+   * Total routes attempted.
+   */
+  totalRoutes: number;
+
+  /**
+   * Log of ticks, flashes, onsights and attempts at each grade.
+   */
+  tickLists: Record<ClimbingActivities, TickTracker[]>,
+
+  /**
+   * Logs of session counters for each route.
+   */
+  routeSessions: Dictionary<SessionCounter>,
 }

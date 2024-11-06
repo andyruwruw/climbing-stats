@@ -14,10 +14,8 @@ import {
   LocationsState,
   RootState,
 } from '../../types/state';
-import {
-  Dictionary,
-  Location,
-} from '../../types';
+import { Dictionary } from '../../types';
+import { Location } from '../../types/climbs';
 
 // Default state
 const defaultState = (): LocationsState => ({

@@ -39,6 +39,8 @@ import Vue from 'vue';
 
 // Local Imports
 import {
+  CHART_INTERVAL,
+  CLIMBING_ACTIVITY,
   PAGE_SIZE,
   PROFILE_PAGE_TABS,
 } from '../../config';
@@ -56,10 +58,13 @@ import api from '../../api';
 import {
   Session,
   SessionSummations,
+} from '../../types/sessions';
+import {
   Tick,
+  TickPyramidEntry,
   TickSummations,
-  User,
-} from '../../types';
+} from '../../types/attempts';
+import { User } from '../../types/user';
 
 export default Vue.extend({
   name: 'profile-page',
@@ -111,6 +116,12 @@ export default Vue.extend({
      */
     tickSummations: null as TickSummations | null,
 
+    boulderPyramid: null as TickPyramidEntry[] | null,
+
+    boulderAttemptPyramid: null,
+
+    routePyramid: null,
+
     /**
      * User data.
      */
@@ -148,11 +159,12 @@ export default Vue.extend({
 
     this.handlePageLoad(this.$route);
 
-    this.retrieveUserData();
-    this.retrieveSessionData();
-    this.retrieveSessions();
-    this.retrieveTickData();
-    this.retrieveTicks();
+    // this.retrieveUserData();
+    // this.retrieveSessionData();
+    // this.retrieveSessions();
+    // this.retrieveTickData();
+    // this.retrieveTicks();
+    this.retrieveBoulderingPyramid();
   },
 
   methods: {
@@ -252,6 +264,24 @@ export default Vue.extend({
           } else {
             this.ticks = response.ticks as Tick[];
           }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async retrieveBoulderingPyramid(): Promise<void> {
+      try {
+        const response = await api.ticks.getTickPyramid(
+          this.id,
+          CHART_INTERVAL.ALL,
+          -1,
+          CLIMBING_ACTIVITY.BOULDER,
+        );
+
+        if (response.status === 200) {
+          console.log(response);
+          this.boulderPyramid = response.pyramid as TickPyramidEntry[];
         }
       } catch (error) {
         console.log(error);

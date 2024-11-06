@@ -266,7 +266,10 @@ export const convertGrade = (
     return grade;
   }
 
-  let index = gradeToDifficultyIndex(grade);
+  let index = gradeToDifficultyIndex(
+    grade,
+    system,
+  );
 
   while (index >= 0 || CLIMBING_GRADES[index]) {
     if (system in CLIMBING_GRADES[index]) {

@@ -9,10 +9,8 @@ import { PAGE_SIZE } from '../config';
 import { setToken } from '../helpers/token';
 
 // Types
-import {
-  Response,
-  User,
-} from '../types';
+import { Response } from '../types';
+import { User } from '../types/user';
 
 /**
  * Delete an existing user.

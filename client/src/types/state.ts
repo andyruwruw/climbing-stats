@@ -1,15 +1,16 @@
 // Types
 import {
-  ClimbingActivities,
-  Dictionary,
-  Location,
-  RouterPageName,
-  Session,
   SessionCounter,
   Tick,
   TickTracker,
-  User,
-} from '.';
+} from './attempts';
+import {
+  ClimbingActivities,
+  Location,
+} from './climbs';
+import { Dictionary } from '.';
+import { Session } from './sessions';
+import { User } from './user';
 
 /**
  * Status of retrieval.
@@ -23,14 +24,29 @@ export type RetrievalStatus = 'idle'
  * Overall root state.
  */
 export interface RootState extends Record<string, any> {
+  /**
+   * Navigational state.
+   */
   navigation: NavigationState;
 
+  /**
+   * Window resize state.
+   */
   resize: ResizeState;
 
+  /**
+   * Sessions state.
+   */
   sessions: SessionsState;
 
+  /**
+   * Ticks state.
+   */
   ticks: TicksState;
 
+  /**
+   * User state.
+   */
   user: UserState;
 }
 
@@ -77,7 +93,7 @@ export interface NavigationState extends Record<string, any> {
   /**
    * Name of the current page.
    */
-  currentPage: RouterPageName;
+  currentPage: string;
 
   /**
    * Page parameters.

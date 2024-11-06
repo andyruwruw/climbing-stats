@@ -44,7 +44,7 @@ import GenericList from '../generic-list/generic-list.vue';
 import ListItem from '../generic-list/list-item.vue';
 
 // Types
-import { Session } from '../../../../types';
+import { Session } from '../../../../types/sessions';
 
 export default Vue.extend({
   name: 'session-list',

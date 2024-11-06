@@ -17,7 +17,7 @@ import {
   RootState,
   RetrievalStatus,
 } from '../../types/state';
-import { User } from '../../types';
+import { User } from '../../types/user';
 
 // Default state
 const defaultState = (): UserState => ({

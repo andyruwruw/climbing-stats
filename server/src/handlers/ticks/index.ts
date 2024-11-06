@@ -4,6 +4,7 @@ import { CreateTickHandler } from './create-tick-handler';
 import { DeleteTickHandler } from './delete-tick-handler';
 import { EditTickHandler } from './edit-tick-handler';
 import { GetTickHandler } from './get-tick-handler';
+import { GetTickPyramidHandler } from './get-tick-pyramid-handler';
 import { GetTickSummationsHandler } from './get-tick-summations-handler';
 import { GetTicksHandler } from './get-ticks-handler';
 
@@ -27,6 +28,7 @@ export class TickRoutes extends AbstractRouter {
     this._routes.push(new CreateTickHandler());
     this._routes.push(new DeleteTickHandler());
     this._routes.push(new EditTickHandler());
+    this._routes.push(new GetTickPyramidHandler());
     this._routes.push(new GetTickSummationsHandler());
     this._routes.push(new GetTickHandler());
     this._routes.push(new GetTicksHandler());

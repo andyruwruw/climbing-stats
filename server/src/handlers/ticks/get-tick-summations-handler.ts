@@ -189,8 +189,6 @@ export class GetTickSummationsHandler extends AbstractHandler {
         }
       }
 
-      console.log(tickLists[CLIMBING_ACTIVITY.BOULDER]);
-
       res.status(200).send({
         summations: {
           uniqueClimbs,

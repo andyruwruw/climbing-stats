@@ -171,6 +171,14 @@ export class GetTickPyramidHandler extends AbstractHandler {
           continue;
         }
 
+        console.log(tick.grade, parseGrade(tick.grade), system, convertGrade(parseGrade(tick.grade), system), simplifyGrade(
+          convertGrade(
+            parseGrade(tick.grade),
+            system,
+          ),
+          system,
+        ));
+
         const grade = simplifyGrade(
           convertGrade(
             parseGrade(tick.grade),

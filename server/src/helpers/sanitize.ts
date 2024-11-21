@@ -241,6 +241,7 @@ export const gradeToDifficultyIndex = (
       return i;
     }
   }
+
   return 0;
 }
 
@@ -271,10 +272,12 @@ export const convertGrade = (
     system,
   );
 
-  while (index >= 0 || CLIMBING_GRADES[index]) {
-    if (system in CLIMBING_GRADES[index]) {
+  while (index >= 0 && CLIMBING_GRADES[index]) {
+    if (system in CLIMBING_GRADES[index] && (CLIMBING_GRADES[index][system] as string).length) {
       return CLIMBING_GRADES[index][system];
     }
+
+    console.log(index);
 
     if (index === 0) {
       return '?';

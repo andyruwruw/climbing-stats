@@ -135,6 +135,21 @@ export const ATTEMPT_STATUS = {
 } as Dictionary<AttemptStatus>;
 
 /**
+ * Importance of various attempt status'.
+ */
+export const ATTEMPT_STATUS_PRIORITY = [
+  'onsight',
+  'flash',
+  'day-flash',
+  'send',
+  'hung',
+  'attempt',
+  'project',
+  'touch',
+  'unknown',
+];
+
+/**
  * Various types of climbing protection.
  */
 export const CLIMBING_PROTECTION = {

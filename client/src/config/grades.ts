@@ -64,7 +64,6 @@ export const FRENCH_ROUTE_GRADES = [
  * Just the simple french grades.
  */
 export const FRENCH_ROUTE_SIMPLE_GRADES = [
-  '2-',
   '2',
   '3',
   '4a',
@@ -408,6 +407,7 @@ export const FONT_BOULDER_GRADE_SIMPLIFICATION = {
  * V-Scale boulder grades in order.
  */
 export const V_SCALE_GRADES = [
+  'V?',
   'V-Easy',
   'V0-',
   'V0',
@@ -485,7 +485,7 @@ export const V_SCALE_GRADES = [
  * Just the simple V-Scale grades.
  */
 export const V_SCALE_SIMPLE_GRADES = [
-  'V-Easy',
+  'V?',
   'V0',
   'V1',
   'V2',
@@ -510,9 +510,10 @@ export const V_SCALE_SIMPLE_GRADES = [
  * Simplification of V-Grades.
  */
 export const V_SCALE_GRADE_SIMPLIFICATION = {
-  VB: 'V-Easy',
-  'V-easy': 'V-Easy',
-  'V-Easy': 'V-Easy',
+  'V?': 'V?',
+  VB: 'V0',
+  'V-easy': 'V0',
+  'V-Easy': 'V0',
   'V0-': 'V0',
   V0: 'V0',
   'V0+': 'V0',

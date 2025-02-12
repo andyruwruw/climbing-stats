@@ -9,6 +9,7 @@
 
       <profile-overview
         v-if="tab === 'overview'"
+        :pyramid="pyramid"
         :tick-summations="tickSummations" />
 
       <profile-ticks
@@ -116,11 +117,10 @@ export default Vue.extend({
      */
     tickSummations: null as TickSummations | null,
 
-    boulderPyramid: null as TickPyramidEntry[] | null,
-
-    boulderAttemptPyramid: null,
-
-    routePyramid: null,
+    /**
+     * User's tick list pyramid.
+     */
+    pyramid: null as TickPyramidEntry[] | null,
 
     /**
      * User data.
@@ -164,7 +164,7 @@ export default Vue.extend({
     // this.retrieveSessions();
     // this.retrieveTickData();
     // this.retrieveTicks();
-    this.retrieveBoulderingPyramid();
+    this.retrievePyramid();
   },
 
   methods: {
@@ -270,18 +270,19 @@ export default Vue.extend({
       }
     },
 
-    async retrieveBoulderingPyramid(): Promise<void> {
+    /**
+     * Retrieves the user's tick pyramid.
+     */
+    async retrievePyramid(): Promise<void> {
       try {
         const response = await api.ticks.getTickPyramid(
           this.id,
           CHART_INTERVAL.ALL,
           -1,
-          CLIMBING_ACTIVITY.BOULDER,
         );
 
         if (response.status === 200) {
-          console.log(response);
-          this.boulderPyramid = response.pyramid as TickPyramidEntry[];
+          this.pyramid = response.pyramid as TickPyramidEntry[];
         }
       } catch (error) {
         console.log(error);

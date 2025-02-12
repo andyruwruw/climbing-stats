@@ -1,6 +1,6 @@
 // Local Imports
 import {
-  getGrade,
+  getFullGradeObject,
   gradeToDifficultyIndex,
   parseGrade,
   simplifyGrade,
@@ -42,7 +42,7 @@ const simplifyTickGrades = (ticks: TickTracker[]): TickTracker[] => {
 
       if (!(simplifiedGrade in simplified)) {
         simplified[simplifiedGrade as ClimbingGrade] = {
-          grade: getGrade(simplifiedGrade),
+          grade: getFullGradeObject(simplifiedGrade),
           attempts: [] as string[],
           ticks: [] as string[],
           flashes: [] as string[],

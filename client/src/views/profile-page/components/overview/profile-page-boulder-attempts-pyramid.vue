@@ -1,15 +1,9 @@
 <template>
   <div>
-    <horizontal-bar-plot
+    <tick-list-plot
       :data="data"
       :height="data.length * 12"
       :id="id"
-      :sort="0"
-      bin="status"
-      domain="grade"
-      domainLabel="Grade"
-      range="attempts"
-      rangeLabel="Unique Boulder Attempts"
       title="Boulder Attempts by Grade" />
   </div>
 </template>
@@ -20,8 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 
 // Local Imports
-import { getSimplifiedBoulderAttemptsByGrade } from '../../../../helpers/ticks';
-import HorizontalBarPlot from '../../../../components/ui/charts/bar-plot/horizontal-bar-plot.vue';
+import TickListPlot from '../../../../components/ui/charts/bar-plot/tick-list-plot.vue';
 
 // Types
 import { Dictionary } from '../../../../types';
@@ -30,7 +23,7 @@ export default Vue.extend({
   name: 'profile-page-boulder-attempts-pyramid',
 
   components: {
-    HorizontalBarPlot,
+    TickListPlot,
   },
 
   props: {
@@ -58,7 +51,7 @@ export default Vue.extend({
      * Data for the bar chart.
      */
     data(): Dictionary<any>[] {
-      return getSimplifiedBoulderAttemptsByGrade(this.ticks);
+      return this.ticks;
     },
   },
 });

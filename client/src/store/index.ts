@@ -9,6 +9,7 @@ import resize from './modules/resize';
 import user from './modules/user';
 import ticks from './modules/ticks';
 import locations from './modules/locations';
+import settings from './modules/settings';
 
 Vue.use(Vuex);
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     navigation,
     resize,
     sessions,
+    settings,
     ticks,
     user,
   },

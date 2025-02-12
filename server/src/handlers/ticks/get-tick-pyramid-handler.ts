@@ -8,14 +8,11 @@ import {
   REQUEST_TYPE,
 } from '../../config';
 import {
-  getGradeAtSimpleIndex,
-  gradeToSimplifiedDifficultyIndex,
-  parseGrade,
-  simplifyGrade,
+  getGrade,
+  gradeToDifficultyIndex,
 } from '../../helpers/grades';
 import { MESSAGE_INTERNAL_SERVER_ERROR } from '../../config/messages';
 import { AbstractHandler } from '../abstract-handler';
-import { convertGrade } from '../../helpers/sanitize';
 import { Monitor } from '../../helpers/monitor';
 
 // Types
@@ -26,7 +23,6 @@ import {
 } from '../../types';
 import {
   ClimbingActivities,
-  GradingSystem,
   Route,
 } from '../../types/climbs';
 import {
@@ -69,7 +65,6 @@ export class GetTickPyramidHandler extends AbstractHandler {
         start = '-1',
         activity = '',
         location = '',
-        gradingSystem = '',
       } = req.query || {};
 
       // Construct database query.
@@ -90,8 +85,7 @@ export class GetTickPyramidHandler extends AbstractHandler {
             $in: `${activity}`.split(','),
           };
         } else {
-          
-        query.type = activity;
+          query.type = activity;
         }
       }
 
@@ -154,12 +148,19 @@ export class GetTickPyramidHandler extends AbstractHandler {
         ticks = ticks.filter((tick: Tick): boolean => (filteredRouteIds.includes(tick.route)));
       }
 
+      const routes = {};
+      const grades = {};
+
       const pyramid = [];
-      const system = (`${gradingSystem}` as GradingSystem).length ? (`${gradingSystem}` as GradingSystem) : undefined;
 
       for (let i = 0; i < ticks.length; i += 1) {
         const tick = ticks[i];
 
+        if (!(tick.route in routes)) {
+          grades[tick.route] = tick.grade;
+        }
+
+        // Filter out non-sends.
         if (![
           ATTEMPT_STATUS.ATTEMPT,
           ATTEMPT_STATUS.HUNG,
@@ -171,43 +172,24 @@ export class GetTickPyramidHandler extends AbstractHandler {
           continue;
         }
 
-        console.log(tick.grade, parseGrade(tick.grade), system, convertGrade(parseGrade(tick.grade), system), simplifyGrade(
-          convertGrade(
-            parseGrade(tick.grade),
-            system,
-          ),
-          system,
-        ));
-
-        const grade = simplifyGrade(
-          convertGrade(
-            parseGrade(tick.grade),
-            system,
-          ),
-          system,
-        );
-
-        const index = gradeToSimplifiedDifficultyIndex(
-          grade,
-          system,
-        );
+        const index = gradeToDifficultyIndex(tick.grade);
 
         while (pyramid.length < index + 1) {
+          const workingIndex = pyramid.length;
+
           pyramid.push({
-            grade: getGradeAtSimpleIndex(pyramid.length),
+            grade: getGrade(workingIndex),
             activities: {} as Record<ClimbingActivities, Record<AttemptStatus, number>>,
           } as TickPyramidEntry);
         }
 
-        console.log(index, pyramid.length);
-
         if (!(tick.type in pyramid[index].activities)) {
-          pyramid[i].activities[tick.type] = {
+          pyramid[index].activities[tick.type] = {
             attempt: 0,
             hung: 0,
             flash: 0,
             send: 0,
-            dayFlash: 0,
+            'day-flash': 0,
             onsight: 0,
           };
         }

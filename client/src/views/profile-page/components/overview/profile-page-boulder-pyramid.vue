@@ -1,16 +1,10 @@
 <template>
   <div>
-    <horizontal-bar-plot
+    <tick-list-plot
+      :activities="['boulder']"
       :data="data"
       :height="data.length * 12"
       :id="id"
-      :sortOrder="V_SCALE_SIMPLE_GRADES"
-      bin="status"
-      domain="grade"
-      domainLabel="Grade"
-      range="ticks"
-      rangeLabel="Unique Boulder Sends"
-      sort="grade"
       title="Boulder Sends by Grade" />
   </div>
 </template>
@@ -21,18 +15,13 @@ import { v4 as uuidv4 } from 'uuid';
 import Vue from 'vue';
 
 // Local Imports
-import { getSimplifiedBoulderTicksByGrade } from '../../../../helpers/ticks';
-import { V_SCALE_SIMPLE_GRADES } from '../../../../config/grades';
-import HorizontalBarPlot from '../../../../components/ui/charts/bar-plot/horizontal-bar-plot.vue';
-
-// Types
-import { Dictionary } from '../../../../types';
+import TickListPlot from '../../../../components/ui/charts/bar-plot/tick-list-plot.vue';
 
 export default Vue.extend({
   name: 'profile-page-boulder-pyramid',
 
   components: {
-    HorizontalBarPlot,
+    TickListPlot,
   },
 
   props: {
@@ -49,22 +38,9 @@ export default Vue.extend({
     /**
      * Tick summation data.
      */
-    ticks: {
-      type: Object,
-      default: () => ({}),
-    },
-  },
-
-  data: () => ({
-    V_SCALE_SIMPLE_GRADES,
-  }),
-
-  computed: {
-    /**
-     * Data for the bar chart.
-     */
-    data(): Dictionary<any>[] {
-      return getSimplifiedBoulderTicksByGrade(this.ticks);
+    data: {
+      type: Array,
+      default: () => ([]),
     },
   },
 });

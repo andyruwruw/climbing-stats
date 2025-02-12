@@ -138,7 +138,7 @@ export interface TickPyramidEntry {
   /**
    * Climbing grade for entry.
    */
-  grade: ClimbingGrade;
+  grade: Dictionary<ClimbingGrade>;
 
   /**
    * Ticks per status per activity.

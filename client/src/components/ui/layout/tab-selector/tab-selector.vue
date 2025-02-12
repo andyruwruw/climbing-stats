@@ -56,8 +56,6 @@ export default Vue.extend({
      * Handles click event.
      */
     onClick(index: number) {
-      console.log(index);
-
       if (index === this.active) {
         return;
       }

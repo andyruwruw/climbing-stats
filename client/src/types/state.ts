@@ -6,6 +6,7 @@ import {
 } from './attempts';
 import {
   ClimbingActivities,
+  GradingSystem,
   Location,
 } from './climbs';
 import { Dictionary } from '.';
@@ -248,4 +249,19 @@ export interface LocationsState extends Record<string, any> {
    * How those locations map.
    */
   map: Dictionary<number>;
+}
+
+/**
+ * Settings state.
+ */
+export interface SettingsState extends Record<string, any> {
+  /**
+   * Grading system.
+   */
+  boulderGrades: GradingSystem;
+
+  /**
+   * Grading system.
+   */
+  routeGrades: GradingSystem;
 }

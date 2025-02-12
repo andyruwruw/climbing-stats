@@ -39,12 +39,17 @@ export const isGradingSystem = (value: string): boolean => ((Object.values(GRADI
  * @returns {Dictionary<ClimbingGrade>} Grade object for grade.
  */
 export const getGrade = (
-  grade: ClimbingGrade,
+  grade: ClimbingGrade | number,
   system = undefined as GradingSystem | undefined,
-): Dictionary<ClimbingGrade> => (CLIMBING_GRADES[gradeToDifficultyIndex(
-  grade,
-  system,
-)]);
+): Dictionary<ClimbingGrade> => {
+  if (typeof grade === 'number') {
+    return CLIMBING_GRADES[grade];
+  }
+  return CLIMBING_GRADES[gradeToDifficultyIndex(
+    grade,
+    system,
+  )];
+};
 
 /**
  * Shifts a grade into a difficulty number.

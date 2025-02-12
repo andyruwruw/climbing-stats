@@ -2,6 +2,7 @@
 import {
   ClimbingActivities,
   ClimbingGrade,
+  GradingSystem,
 } from './climbs';
 import { DatabaseRow } from './database';
 import { Dictionary } from '.';
@@ -138,7 +139,7 @@ export interface TickPyramidEntry {
   /**
    * Climbing grade for entry.
    */
-  grade: ClimbingGrade;
+  grade: Record<GradingSystem, ClimbingGrade>;
 
   /**
    * Ticks per status per activity.

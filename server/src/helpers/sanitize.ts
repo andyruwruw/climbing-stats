@@ -277,8 +277,6 @@ export const convertGrade = (
       return CLIMBING_GRADES[index][system];
     }
 
-    console.log(index);
-
     if (index === 0) {
       return '?';
     }

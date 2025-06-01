@@ -318,3 +318,28 @@ export interface PartnerTracker {
    */
   drivenHours: number;
 }
+
+/**
+ * Data for creating a new user.
+ */
+export interface CreateUserData {
+  /**
+   * User's username.
+   */
+  username: string;
+
+  /**
+   * User's email (used as username).
+   */
+  email: string;
+
+  /**
+   * User's password (will be hashed).
+   */
+  password: string;
+
+  /**
+   * User's display name (optional).
+   */
+  displayName?: string;
+}

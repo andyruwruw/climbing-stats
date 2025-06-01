@@ -22,6 +22,7 @@ import {
   ClimbingPartner,
   Token,
   User,
+  CreateUserData,
 } from '../types/users';
 import {
   ServerResponse,
@@ -173,4 +174,53 @@ export class AbstractDatabase {
   async deleteAllFiles(): Promise<boolean> {
     throw new UsedAbstractDatabaseError();
   }
+
+  /**
+   * Finds a user by email.
+   * 
+   * @param email User's email
+   * @returns User if found, null otherwise
+   */
+  abstract findUserByEmail(email: string): Promise<User | null>;
+
+  /**
+   * Finds a user by username.
+   * 
+   * @param username User's username
+   * @returns User if found, null otherwise
+   */
+  abstract findUserByUsername(username: string): Promise<User | null>;
+
+  /**
+   * Finds a user by ID.
+   * 
+   * @param id User's ID
+   * @returns User if found, null otherwise
+   */
+  abstract findUserById(id: string): Promise<User | null>;
+
+  /**
+   * Creates a new user.
+   * 
+   * @param data User creation data
+   * @returns Created user
+   */
+  abstract createUser(data: CreateUserData): Promise<User>;
+
+  /**
+   * Updates a user.
+   * 
+   * @param id User's ID
+   * @param data Update data
+   * @returns Updated user
+   */
+  abstract updateUser(id: string, data: Partial<User>): Promise<User>;
+
+  /**
+   * Deletes a user.
+   * 
+   * @param id User's ID
+   * @returns Whether user was deleted
+   */
+  abstract deleteUser(id: string): Promise<boolean>;
 }
